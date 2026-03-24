@@ -27,6 +27,7 @@ export const translations = {
     access_locked: "Accesso bloccato",
     too_many_attempts: "Troppi tentativi errati",
     agents_watching: "Gli agenti stanno guardando 👀",
+    founder_role: "Direttore Creativo",
     
     // Change PIN
     change_pin: "Cambia PIN",
@@ -73,6 +74,7 @@ export const translations = {
     access_locked: "Access locked",
     too_many_attempts: "Too many failed attempts",
     agents_watching: "The agents are watching 👀",
+    founder_role: "Creative Director",
 
     // Change PIN
     change_pin: "Change PIN",
@@ -119,6 +121,7 @@ export const translations = {
     access_locked: "Accès verrouillé",
     too_many_attempts: "Trop di tentatives échouées",
     agents_watching: "Les agents regardent 👀",
+    founder_role: "Directeur Créatif",
 
     // Change PIN
     change_pin: "Changer le PIN",
