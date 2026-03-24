@@ -410,6 +410,10 @@
           <div class="cai-av" style="background:#e0f2fe; color:#0ea5e9;"><i class="ph ph-newspaper"></i></div>
           <div><div class="cai-n">Capo Redattore</div><div class="cai-r">DIREZIONE</div></div>
         </div>
+        <div class="chat-agent-item" onclick="window.selectChatAgent('Claude', 'SCRITTORE', '#fef3c7', '#f59e0b', 'ph-pen-nib')">
+          <div class="cai-av" style="background:#fef3c7; color:#f59e0b;"><i class="ph ph-pen-nib"></i></div>
+          <div><div class="cai-n">Claude</div><div class="cai-r">SCRITTORE</div></div>
+        </div>
       </div>
 
       <div class="chat-main-area">
@@ -514,10 +518,26 @@
       setTimeout(() => {
         const botMsg = document.createElement('div');
         botMsg.className = 'msg bot';
-        botMsg.innerHTML = `<div class="msg-content">Sto elaborando la tua richiesta per lo studio... La sincronizzazione Cloud è attiva. Procedo con la Fase 5? 🦅</div>`;
+        botMsg.innerHTML = `<div class="msg-content">Ricevuto dal team AI. Sto elaborando la tua richiesta... 🦅</div>`;
         box.appendChild(botMsg);
         box.scrollTop = box.scrollHeight;
       }, 1000);
+    }
+
+    window.selectChatAgent = function(name, role, bg, color, icon) {
+      document.querySelectorAll('.chat-agent-item').forEach(el => el.classList.remove('active'));
+      const items = document.querySelectorAll('.chat-agent-item');
+      items.forEach(item => {
+        if(item.innerText.includes(name)) item.classList.add('active');
+      });
+      
+      const hdrIcon = document.querySelector('.agent-chat-glass .sph-icon');
+      hdrIcon.style.background = bg;
+      hdrIcon.style.color = color;
+      hdrIcon.innerHTML = `<i class="ph ${icon}"></i>`;
+      
+      document.querySelector('.agent-chat-glass .sph-name').textContent = name + " V10";
+      document.querySelector('.agent-chat-glass .sph-role').textContent = "Status: Connesso ("+role+")";
     }
   </script>
 
