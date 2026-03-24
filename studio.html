@@ -51,27 +51,28 @@
     .ar-lft { display: flex; align-items: center; gap: 14px; }
     .ar-ic { width: 40px; height: 40px; border-radius: 10px; display:flex; align-items:center; justify-content:center; background:#ede9fe; color:#8b5cf6; }
     .ar-n { font-weight: 600; font-size: 14px; }
-    .ar-stat { font-family: monospace; font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 12px; }
 
     .widget-dark { background: linear-gradient(135deg, #0f172a, #020617); color: white; border: none; overflow: hidden;}
     .wd-title { font-family: var(--font-serif); font-size: 28px; line-height: 1.1; margin-bottom: 16px;}
     .wd-btn { background: linear-gradient(90deg, #d946ef, #8b5cf6); color: white; border: none; border-radius: 12px; padding: 14px 20px; font-weight: 600; cursor: pointer; transition: 0.2s;}
     .wd-btn:hover { transform: scale(1.02); }
 
-    /* MAP STYLES */
+    /* MAP STYLES PREMIUM V9 */
     .control-room-layout { display: grid; grid-template-columns: 320px 1fr; grid-template-rows: 1fr 220px; gap: 24px; height: calc(100vh - 120px); padding: 0 40px 40px; box-sizing: border-box; }
     .cr-monitor { grid-row: 1/3; background: #fff; border-radius: 32px; border: 1px solid var(--border-light); overflow: hidden; display: flex; flex-direction: column; }
     .cr-map-area { background: #0f172a; border-radius: 32px; position: relative; overflow: hidden; background-image: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%); }
     #flowContainer { width: 100%; height: 100%; }
-    .monitor-item { display: flex; align-items: center; gap: 16px; padding: 18px 24px; border-bottom: 1px solid var(--border-light); }
-    .no-sh { filter: none !important; }
-    .cr-comm-hub { background: #fff; border-radius: 32px; border: 1px solid var(--border-light); padding: 24px; display: flex; flex-direction: column; gap:12px; }
-    .comm-feed { flex: 1; background: #0f172a; border-radius: 16px; padding: 16px; overflow-y: auto; color: #fff; font-family: monospace; font-size: 12px; }
+    .monitor-item { display: flex; align-items: center; gap: 16px; padding: 18px 24px; border-bottom: 1px solid var(--border-light); transition:0.3s;}
+    .monitor-item:hover { background: #f8fafc; padding-left:30px; }
+    .mi-av { width:44px; height:44px; border-radius:12px; background:#f1f5f9; display:flex; align-items:center; justify-content:center; font-size:20px; border:1px solid #ddd; position:relative; }
+    .mi-av.online::after { content:''; position:absolute; top:-4px; right:-4px; width:10px; height:10px; border-radius:50%; background:#10b981; border:3px solid #fff; box-shadow:0 0 8px #10b981; }
 
-    /* MODALS */
+    .cr-comm-hub { background: #fff; border-radius: 32px; border: 1px solid var(--border-light); padding: 24px; display: flex; flex-direction: column; gap:12px; }
+    .comm-feed { flex: 1; background: #0f172a; border-radius: 16px; padding: 16px; overflow-y: auto; color: #fff; font-family: monospace; font-size: 12px; line-height:1.6;}
+
     .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(20px); z-index: 5000; display: none; align-items: center; justify-content: center; }
     .modal-overlay.show { display: flex; }
-    .modal-card { background: white; border-radius: 32px; width: 400px; padding: 32px; box-shadow: 0 40px 80px rgba(0,0,0,0.1); }
+    .modal-card { background: white; border-radius: 32px; width: 400px; padding: 32px; }
   </style>
 </head>
 <body>
@@ -95,7 +96,7 @@
       </div>
     </header>
 
-    <!-- DASHBOARD -->
+    <!-- PAGE: DASHBOARD -->
     <div id="dashboard" class="studio-page active">
       <div class="dashboard-grid" id="dashboardGrid">
         <div class="widget-box w-col-4">
@@ -104,49 +105,50 @@
         </div>
         <div class="widget-box w-col-4">
           <div class="kpi-hdr"><div class="kpi-icon" style="color:#0ea5e9;"><i class="ph ph-paper-plane-tilt"></i></div></div>
-          <div class="kpi-val">12</div><div class="kpi-lbl">Post Pronti</div>
+          <div class="kpi-val">12</div><div class="kpi-lbl">Post Pronti per Oggi</div>
         </div>
         <div class="widget-box w-col-4">
           <div class="kpi-hdr"><div class="kpi-icon" style="color:#ec4899;"><i class="ph ph-mask-happy"></i></div><div class="kpi-badge" style="background:#fce7f3; color:#db2777;">Live</div></div>
-          <div class="kpi-val">Positivo</div><div class="kpi-lbl">Sentiment</div>
+          <div class="kpi-val">Positivo</div><div class="kpi-lbl">Sentiment del Pubblico</div>
         </div>
         <div class="widget-box w-col-8">
           <h2 class="sq-title">La Squadra Operativa</h2>
           <div class="agent-row">
-            <div class="ar-lft"><div class="ar-ic"><i class="ph ph-code"></i></div><div><div class="ar-n">Antigravity</div><div style="font-size:10px;color:var(--text-muted);">ARCHITETTO</div></div></div>
+            <div class="ar-lft"><div class="ar-ic"><i class="ph ph-code"></i></div><div><div class="ar-n">Antigravity</div><div style="font-size:10px;color:var(--text-muted);">ARCHITETTO & ORCHESTRATORE</div></div></div>
             <div class="ar-stat" style="background:#d1fae5; color:#10b981;">Online</div>
           </div>
           <div class="agent-row">
-            <div class="ar-lft"><div class="ar-ic" style="background:#fce7f3; color:#ec4899;"><i class="ph ph-paint-brush"></i></div><div><div class="ar-n">Agente 2</div><div style="font-size:10px;color:var(--text-muted);">DESIGNER</div></div></div>
-            <div class="ar-stat" style="background:#fce7f3; color:#db2777;">Attivo</div>
+            <div class="ar-lft"><div class="ar-ic" style="background:#fce7f3; color:#ec4899;"><i class="ph ph-paint-brush"></i></div><div><div class="ar-n">Agente 2 (Designer)</div><div style="font-size:10px;color:var(--text-muted);">VISUAL & CSS MASTER</div></div></div>
+            <div class="ar-stat" style="background:#fce7f3; color:#db2777;">Fase 3 Attiva</div>
           </div>
         </div>
         <div class="widget-box widget-dark w-col-4">
           <div class="wd-title">Tavolo del Capo Redattore</div>
+          <div style="font-size:13px; opacity:0.7; margin-bottom:20px;">Direzione Creativa in attesa di istruzioni. Collegamenti neurali pronti.</div>
           <button class="wd-btn">Attendi Fase 4</button>
         </div>
       </div>
     </div>
 
-    <!-- MAPPA -->
+    <!-- PAGE: MAPPA (SALA CONTROLLO) -->
     <div id="page-flows" class="studio-page">
       <div class="control-room-layout">
         <div class="cr-monitor">
-          <div style="padding:24px; border-bottom:1px solid var(--border-light); font-weight:800; font-size:12px; color:var(--text-muted);">🤖 MONITOR AGENTI</div>
-          <div id="monitorList"></div>
+          <div style="padding:24px; border-bottom:1px solid var(--border-light); font-weight:800; font-size:11px; color:var(--text-muted); letter-spacing:0.1em;">🤖 MONITOR AGENTI</div>
+          <div id="monitorList" class="monitor-list"></div>
         </div>
         <div class="cr-map-area">
           <div id="flowContainer"></div>
         </div>
         <div class="cr-comm-hub">
-          <div style="font-weight:800; font-size:11px; color:var(--text-muted);">SALA COMUNICAZIONE</div>
+          <div style="font-weight:800; font-size:11px; color:var(--text-muted); letter-spacing:0.1em;">📢 SALA COMUNICAZIONE</div>
           <div class="comm-feed" id="commFeed">
-            <div style="margin-bottom:8px;">14:10 ✍️ Elena: Script approvato.</div>
-            <div>14:18 👑 Director: Mappa sincronizzata.</div>
+            <div class="comm-msg">14:10 ✍️ Elena: Script approvato.</div>
+            <div class="comm-msg">14:18 👑 Director: Flusso neurale sincronizzato.</div>
           </div>
           <div style="display:flex; gap:10px;">
-            <input type="text" id="commInput" style="flex:1; border-radius:12px; border:1px solid #ddd; padding:10px;" placeholder="Messaggio...">
-            <button onclick="window.sendCommMsg()" style="background:var(--accent-primary); color:white; border:none; padding:10px 15px; border-radius:12px;"><i class="ph ph-paper-plane"></i></button>
+            <input type="text" id="commInput" style="flex:1; border-radius:12px; border:1px solid #ddd; padding:12px; outline:none;" placeholder="Invia comando...">
+            <button onclick="window.sendCommMsg()" style="background:var(--accent-primary); color:white; border:none; padding:12px 18px; border-radius:12px; cursor:pointer;"><i class="ph ph-paper-plane-right"></i></button>
           </div>
         </div>
       </div>
@@ -161,9 +163,9 @@
         <button onclick="window.closeSettings()" style="border:none;background:none;cursor:pointer;font-size:24px;">×</button>
       </div>
       <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
-        <button onclick="window.setLang('it')" style="padding:10px; border-radius:12px; border:1px solid #ddd;">IT</button>
-        <button onclick="window.setLang('en')" style="padding:10px; border-radius:12px; border:1px solid #ddd;">EN</button>
-        <button onclick="window.setLang('fr')" style="padding:10px; border-radius:12px; border:1px solid #ddd;">FR</button>
+        <button onclick="window.setLang('it')" style="padding:10px; border-radius:12px; border:1px solid #ddd; cursor:pointer;">IT</button>
+        <button onclick="window.setLang('en')" style="padding:10px; border-radius:12px; border:1px solid #ddd; cursor:pointer;">EN</button>
+        <button onclick="window.setLang('fr')" style="padding:10px; border-radius:12px; border:1px solid #ddd; cursor:pointer;">FR</button>
       </div>
     </div>
   </div>
@@ -193,7 +195,7 @@
       canvasId: 'flowCanvas', nodes: [], links: [], initialized: false,
       init(cid) {
         const c=document.getElementById(cid); if(!c)return; this.initialized=true;
-        c.innerHTML = `<svg id="${this.canvasId}" width="100%" height="100%" viewBox="0 0 800 500" style="overflow:visible;"><defs><filter id="neonGlow"><feGaussianBlur stdDeviation="4" result="blur"/><feComposite in="SourceGraphic" in2="blur" operator="over"/></filter></defs><g id="linksLayer"></g><g id="nodesLayer"></g></svg>`;
+        c.innerHTML = `<svg id="${this.canvasId}" width="100%" height="100%" viewBox="0 0 800 500" style="overflow:visible; user-select:none;"><defs><filter id="neonGlow"><feGaussianBlur stdDeviation="3" result="blur"/><feComposite in="SourceGraphic" in2="blur" operator="over"/></filter><marker id="arrow" markerWidth="10" markerHeight="7" refX="25" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#fff" opacity="0.5" /></marker></defs><g id="linksLayer"></g><g id="nodesLayer"></g></svg>`;
         this.generateFlow(); this.renderMonitor();
         const s=document.getElementById(this.canvasId); 
         s.addEventListener('mousemove', e=>this.onDrag(e)); 
@@ -202,45 +204,44 @@
       },
       generateFlow() {
         const agents = [
-          {id:'s', r:'Script', e:'📖', c:'#3b82f6'}, {id:'v', r:'Visual', e:'🎨', c:'#ec4899'},
-          {id:'m', r:'Music', e:'🎵', c:'#8b5cf6'}, {id:'d', r:'Dev', e:'💻', c:'#10b981'}
+          {id:'d', r:'Director', e:'👑', c:'#f59e0b', s:'run'}, {id:'s', r:'Scrittore', e:'✍️', c:'#3b82f6', s:'run'},
+          {id:'m', r:'Musicale', e:'🎵', c:'#fb923c', s:'wait'}, {id:'v', r:'Visual', e:'🎨', c:'#ec4899', s:'done'},
+          {id:'c', r:'Cipher', e:'🛡️', c:'#10b981', s:'run'}, {id:'l', r:'Library', e:'📖', c:'#8b5cf6', s:'wait'}
         ];
-        this.nodes = [{id:'h', x:400, y:250, l:'HUB', e:'💡', c:'#f59e0b', type:'hub'}];
+        this.nodes = [{id:'h', x:400, y:250, l:'CAPO', e:'🦁', c:'#f59e0b', type:'hub'}];
         agents.forEach((a,i) => {
           const ang=(i/agents.length)*Math.PI*2;
-          this.nodes.push({id:a.id, x:400+180*Math.cos(ang), y:250+180*Math.sin(ang), l:a.r, e:a.e, c:a.c, type:'agent'});
+          this.nodes.push({id:a.id, x:400+180*Math.cos(ang), y:250+180*Math.sin(ang), l:a.r, e:a.e, c:a.c, status:a.s, type:'agent'});
         });
-        this.links = agents.map(a => ({source:a.id, target:'h', color:a.c}));
+        this.links = agents.map(a => ({source:a.id, target:'h', color:a.c, status:a.s}));
         this.render();
       },
       render() {
         const nL=document.getElementById('nodesLayer'), lL=document.getElementById('linksLayer'); if(!nL)return;
-        lL.innerHTML = this.links.map(l=>{
+        lL.innerHTML = this.links.map((l,i)=>{
           const s=this.nodes.find(n=>n.id===l.source), t=this.nodes.find(n=>n.id===l.target);
-          return `<path d="M ${s.x} ${s.y} Q ${(s.x+t.x)/2+20} ${(s.y+t.y)/2-20} ${t.x} ${t.y}" stroke="${l.color}" stroke-width="2" fill="none" opacity="0.4"/>`;
+          const active = l.status === 'run';
+          return `<path d="M ${s.x} ${s.y} L ${t.x} ${t.y}" stroke="${l.color}" stroke-width="2" fill="none" opacity="${active?0.5:0.2}" marker-end="url(#arrow)"/>${active?`<circle r="3" fill="#fff" style="filter:url(#neonGlow)"><animateMotion dur="4s" repeatCount="indefinite" path="M ${s.x} ${s.y} L ${t.x} ${t.y}" begin="${i*0.5}s" /></circle>`:''}`;
         }).join('');
-        nL.innerHTML = this.nodes.map(n => `<g transform="translate(${n.x},${n.y})" style="cursor:grab;" onmousedown="window.FlowEngine.startDrag(event,'${n.id}')"><circle r="${n.type==='hub'?40:25}" fill="rgba(15,23,42,0.8)" stroke="${n.color}" stroke-width="2" style="filter:url(#neonGlow);"/><text y="${n.type==='hub'?10:6}" text-anchor="middle" font-size="${n.type==='hub'?28:20}">${n.e}</text></g>`).join('');
+        nL.innerHTML = this.nodes.map(n => `<g transform="translate(${n.x},${n.y})" style="cursor:grab;" onmousedown="window.FlowEngine.startDrag(event,'${n.id}')"><circle r="${n.type==='hub'?40:30}" fill="rgba(15,23,42,0.9)" stroke="${n.color}" stroke-width="2" style="filter:drop-shadow(0 0 12px ${n.color}55);"/><text y="${n.type==='hub'?10:8}" text-anchor="middle" font-size="${n.type==='hub'?32:26}">${n.e}</text><text y="${n.type==='hub'?60:50}" text-anchor="middle" fill="#fff" font-size="9px" font-weight="700" style="text-transform:uppercase; letter-spacing:0.04em;">${n.l}</text></g>`).join('');
       },
       startDrag(e,id){ e.preventDefault(); this.dragN=this.nodes.find(n=>n.id===id); const s=document.getElementById(this.canvasId), pt=s.createSVGPoint(); pt.x=e.clientX; pt.y=e.clientY; const loc=pt.matrixTransform(s.getScreenCTM().inverse()); this.off={x:loc.x-this.dragN.x, y:loc.y-this.dragN.y};},
       onDrag(e){ if(!this.dragN)return; const s=document.getElementById(this.canvasId), pt=s.createSVGPoint(); pt.x=e.clientX; pt.y=e.clientY; const loc=pt.matrixTransform(s.getScreenCTM().inverse()); this.dragN.x=loc.x-this.off.x; this.dragN.y=loc.y-this.off.y; this.render();},
-      renderMonitor(){ const m=document.getElementById('monitorList'); m.innerHTML=this.nodes.filter(n=>n.type==='agent').map(a=>`<div class="monitor-item"><div>${a.e}</div><div><div style="font-weight:700;">${a.l}</div><div style="font-size:10px;color:#666;">Online</div></div></div>`).join('');}
+      renderMonitor(){ const m=document.getElementById('monitorList'); m.innerHTML=this.nodes.filter(n=>n.type==='agent').map(a=>`<div class="monitor-item"><div class="mi-av ${a.status==='run'?'online':''}">${a.e}</div><div style="flex:1;"><div style="font-weight:700; font-size:14px;">${a.l}</div><div style="font-size:10px; color:#64748b; font-family:monospace;">${a.status==='run'?'Operativo':'In pausa'}</div></div></div>`).join('');}
     };
 
     window.sendCommMsg = () => {
       const i=document.getElementById('commInput'), f=document.getElementById('commFeed');
-      if(i.value) { f.innerHTML += `<div>NOW 🦁 Tu: ${i.value}</div>`; i.value=''; f.scrollTop=f.scrollHeight; }
+      if(i.value) { f.innerHTML += `<div class="comm-msg"><b>Tu:</b> ${i.value}</div>`; i.value=''; f.scrollTop=f.scrollHeight; }
     };
 
-    document.addEventListener('DOMContentLoaded', () => {
-      try {
-        applyTranslations();
-        const params = new URLSearchParams(window.location.search);
-        const studioId = params.get('id');
-        const db = JSON.parse(localStorage.getItem('v10_studi_cloud')) || [];
-        const info = db.find(s => s.id === studioId);
-        if(info) document.getElementById('studioTitleHeader').textContent = info.title;
-        console.log("V10 Studio Ready.");
-      } catch(e) { console.error("Init Error:", e); }
+    document.addEventListener('DOMContentLoaded', () => { 
+      applyTranslations(); 
+      const params = new URLSearchParams(window.location.search);
+      const studioId = params.get('id');
+      const db = JSON.parse(localStorage.getItem('v10_studi_cloud')) || [];
+      const info = db.find(s => s.id === studioId);
+      if(info) document.getElementById('studioTitleHeader').textContent = info.title;
     });
   </script>
 </body>
