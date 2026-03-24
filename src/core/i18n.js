@@ -63,7 +63,13 @@ export const translations = {
     choose_base_sub: "I 4 Layout Editoriali più potenti del V10",
     greeting_morning: "Buongiorno",
     greeting_afternoon: "Buon pomeriggio",
-    greeting_evening: "Buonasera"
+    greeting_evening: "Buonasera",
+    global_secretary: "Segretario Globale",
+    global_secretary_sub: "Sincronizzazione Multi-Studio",
+    require_approval: "Richiedono Approvazione",
+    today: "Oggi",
+    global_agenda: "Agenda Globale Privata",
+    add_event: "Aggiungi Evento"
   },
   en: {
     // Shared
@@ -128,7 +134,13 @@ export const translations = {
     choose_base_sub: "The 4 most powerful editorial layouts of V10",
     greeting_morning: "Good morning",
     greeting_afternoon: "Good afternoon",
-    greeting_evening: "Good evening"
+    greeting_evening: "Good evening",
+    global_secretary: "Global Secretary",
+    global_secretary_sub: "Multi-Studio Sync",
+    require_approval: "Require Approval",
+    today: "Today",
+    global_agenda: "Private Global Agenda",
+    add_event: "Add Event"
   },
   fr: {
     // Shared
@@ -193,7 +205,13 @@ export const translations = {
     choose_base_sub: "Les 4 mises in page éditoriales les plus puissantes de V10",
     greeting_morning: "Bonjour",
     greeting_afternoon: "Bon après-midi",
-    greeting_evening: "Bonsoir"
+    greeting_evening: "Bonsoir",
+    global_secretary: "Secrétaire Global",
+    global_secretary_sub: "Sync Multi-Studio",
+    require_approval: "Demander Approbation",
+    today: "Aujourd'hui",
+    global_agenda: "Agenda Global Privé",
+    add_event: "Ajouter Événement"
   }
 };
 
