@@ -1,0 +1,146 @@
+/* VISION 2.0 PRO: DESIGN SYSTEM */
+:root {
+  /* Colors - Deep Space Foundation */
+  --bg: #05070a;
+  --bg-darker: #020305;
+  --glass: rgba(255, 255, 255, 0.03);
+  --glass-heavy: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-blur: blur(25px);
+  
+  /* Text */
+  --text: #ffffff;
+  --text-dim: rgba(255, 255, 255, 0.6);
+  --accent: #e8c547; /* Gold */
+  
+  /* Layout */
+  --ribbon-width: 68px;
+  --header-height: 80px;
+  --radius: 24px;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+}
+
+/* COMMAND RIBBON */
+.command-ribbon {
+  width: var(--ribbon-width);
+  height: 100vh;
+  background: var(--glass);
+  backdrop-filter: var(--glass-blur);
+  border-right: 1px solid var(--glass-border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 0;
+  gap: 20px;
+  z-index: 100;
+}
+
+.ribbon-item {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 1.2rem;
+}
+
+.ribbon-item:hover {
+  background: var(--glass-heavy);
+  transform: scale(1.05);
+}
+
+.ribbon-item.active {
+  background: var(--glass-heavy);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+}
+
+.ribbon-spacer { flex: 1; }
+
+/* APP CONTAINER */
+.app-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background: radial-gradient(circle at top right, rgba(232, 197, 71, 0.05), transparent 40%);
+}
+
+.app-header {
+  height: var(--header-height);
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.header-content {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+h1 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.8rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.user-pill {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.user-pill:hover { background: var(--glass-heavy); }
+
+/* CONTENT AREA */
+.content-area {
+  flex: 1;
+  padding: 40px;
+  overflow-y: auto;
+}
+
+/* THEMES (Sample) */
+body.theme-grapho { --accent: #00f2ff; }
+body.theme-flux { --accent: #8b5cf6; }
+
+/* MODALS */
+.picker-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(10px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.picker-content {
+  background: var(--bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 40px;
+  width: 600px;
+}

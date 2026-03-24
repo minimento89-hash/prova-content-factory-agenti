@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vision 2.0 Pro — Meta-App</title>
+  
+  <!-- Fonts & Libraries -->
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+  
+  <!-- Global Styles -->
+  <link rel="stylesheet" href="src/styles/design-system.css">
+  
+  <!-- Root Protection -->
+  <script type="module">
+    import { onAuthChange } from "./src/core/auth.js";
+    onAuthChange((user, profile) => {
+      if (!user && !profile) {
+        window.location.href = "login.html";
+      } else {
+        console.log("🚀 Vision 2.0 Pro: Core Ready");
+      }
+    });
+  </script>
+</head>
+<body class="theme-vision-2 theme-grapho">
+  <!-- Command Ribbon -->
+  <nav class="command-ribbon">
+    <div class="ribbon-item active" onclick="app.switchPage('dashboard')">🏠</div>
+    <div class="ribbon-item" onclick="app.switchPage('agents')">🤖</div>
+    <div class="ribbon-item" onclick="app.switchPage('forge')">⚡</div>
+    <div class="ribbon-item" onclick="app.switchPage('flows')">🌊</div>
+    <div class="ribbon-item" onclick="TemplateEngine.togglePicker()">🎨</div>
+    <div class="ribbon-spacer"></div>
+    <div class="ribbon-item" onclick="AuraAI.showSuggestion()">✨</div>
+    <div class="ribbon-item" onclick="app.logout()">🔐</div>
+  </nav>
+
+  <!-- App Container -->
+  <main class="app-container">
+    <header class="app-header">
+      <div class="header-content">
+        <h1 id="pageTitle">Studio Dashboard</h1>
+        <div class="user-pill" onclick="app.toggleProfile()">
+          <span id="userEmoji">🦁</span>
+          <span id="userName">Il Capo</span>
+        </div>
+      </div>
+    </header>
+
+    <div id="contentArea" class="content-area">
+      <!-- Pages will be rendered here -->
+    </div>
+  </main>
+
+  <!-- Modals & Overlays -->
+  <div id="templatePicker" class="picker-overlay" style="display:none">
+    <div class="picker-content">
+      <h2>Layout Mastery</h2>
+      <div id="templateGrid" class="template-grid"></div>
+      <button onclick="TemplateEngine.togglePicker()">Chiudi</button>
+    </div>
+  </div>
+
+  <!-- App Orchestrator -->
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>
