@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Content Factory V10 — Launcher</title>
+  <title data-t="launcher_title">Content Factory V10 — Launcher</title>
   
   <!-- Phosphor Icons per il look Premium -->
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
@@ -27,10 +27,10 @@
         <div class="user-av">🦁</div>
         <div class="user-info">
           <div class="user-name">Il Capo</div>
-          <div class="user-status"><div class="dot"></div> Online</div>
+          <div class="user-status"><div class="dot"></div> <span data-t="online">Online</span></div>
         </div>
       </div>
-      <button class="btn-esci"><i class="ph ph-sign-out"></i> Esci</button>
+      <button class="btn-esci"><i class="ph ph-sign-out"></i> <span data-t="logout">Esci</span></button>
     </div>
   </header>
 
@@ -38,46 +38,45 @@
     
     <!-- SALUTO -->
     <section class="greeting-sec">
-      <h1 class="greeting-title">Buon pomeriggio, Il Capo 👋</h1>
-      <p class="greeting-sub">Hai 2 studi attivi — Scegli dove lavorare oggi</p>
+      <h1 class="greeting-title" id="greetingUser">Ciao, Il Capo 👋</h1>
+      <p class="greeting-sub" id="studiosStatus">Hai 2 studi attivi — Scegli dove lavorare oggi</p>
     </section>
 
     <!-- ACCESSO RAPIDO -->
-    <div class="section-label">Accesso Rapido</div>
+    <div class="section-label" data-t="quick_links">Accesso Rapido</div>
     <section class="quick-access-grid">
       
       <a href="roadmap.html" style="text-decoration: none; color: inherit;">
         <div class="qa-card" style="border-bottom: 3px solid #ec4899;">
           <div class="qa-icon" style="color: #ec4899; background: #fce7f3;"><i class="ph ph-rocket-launch"></i></div>
-          <div class="qa-title">Roadmap</div>
-          <div class="qa-sub">Avanzamento & Milestone</div>
+          <div class="qa-title" data-t="roadmap">Roadmap</div>
+          <div class="qa-sub" data-t="roadmap_sub">Avanzamento & Milestone</div>
         </div>
       </a>
       
       <div class="qa-card" style="border-bottom: 3px solid #8b5cf6;">
         <div class="qa-icon"><i class="ph ph-gear-six"></i></div>
-        <div class="qa-title">Impostazioni</div>
-        <div class="qa-sub">Temi • Profilo • API Keys</div>
+        <div class="qa-title" data-t="settings">Impostazioni</div>
+        <div class="qa-sub" data-t="settings_sub">Temi • Profilo • API Keys</div>
       </div>
       
       <div class="qa-card" style="border-bottom: 3px solid #f59e0b;">
         <div class="qa-icon" style="color: #f59e0b; background: #fef3c7;"><i class="ph ph-clipboard-text"></i></div>
-        <div class="qa-title">Log globale</div>
-        <div class="qa-sub">Attività da tutti gli studi</div>
+        <div class="qa-title" data-t="global_log">Log globale</div>
+        <div class="qa-sub" data-t="log_sub">Attività da tutti gli studi</div>
       </div>
       
       <div class="qa-card" style="border-bottom: 3px solid #06b6d4;">
         <div class="qa-icon" style="color: #06b6d4; background: #cffafe;"><i class="ph ph-chart-bar"></i></div>
-        <div class="qa-title">Statistiche</div>
-        <div class="qa-sub">Social • Views • Hype</div>
+        <div class="qa-title" data-t="statistics">Statistiche</div>
+        <div class="qa-sub" data-t="stats_sub">Social • Views • Hype</div>
       </div>
 
     </section>
 
     <!-- I TUOI STUDI (CON DRAG & DROP) -->
     <div class="section-label" style="display: flex; justify-content: space-between; align-items: center;">
-      <span>I Tuoi Studi <span id="syncStatus" style="font-size:9px; margin-left:10px; color:var(--accent-success);">☁ Sincronizzato</span></span>
-      <span style="font-size: 9px; opacity: 0.6;"><i class="ph ph-hand-grabbing"></i> Trascina per riordinare o trasforma un nuovo layout</span>
+      <span><span data-t="your_studios">I Tuoi Studi</span> <span id="syncStatus" style="font-size:9px; margin-left:10px; color:var(--accent-success);">☁ <span data-t="sync_status">Sincronizzato</span></span></span>
     </div>
     
     <section class="studi-grid" id="studi-container">
@@ -189,8 +188,8 @@
       <!-- RGT: LAYOUT -->
       <div class="layout-col" id="layoutCol">
         <div class="layout-hdr">
-          <h2 class="l-title">Scegli la tua Base</h2>
-          <p class="l-sub">I 4 Layout Editoriali più potenti del V10</p>
+          <h2 class="l-title" data-t="choose_base">Scegli la tua Base</h2>
+          <p class="l-sub" data-t="choose_base_sub">I 4 Layout Editoriali più potenti del V10</p>
         </div>
         
         <div class="layout-grid">
@@ -299,8 +298,8 @@
       c.innerHTML += `
         <div class="new-studio-card" id="new-studio-slot">
           <div class="add-icon"><i class="ph ph-plus"></i></div>
-          <div class="ns-title">Nuovo studio</div>
-          <div class="ns-sub">Scegli il layout o <b>trascina qui i componenti</b> per fondare l'azienda</div>
+          <div class="ns-title" data-t="new_studio">${t('new_studio')}</div>
+          <div class="ns-sub" data-t="new_studio_sub">${t('new_studio_sub')}</div>
         </div>
       `;
 
@@ -319,6 +318,7 @@
     // SortableJS Init per salvare l'ordine della Dashboard (FASE 4)
     function initDragDrop() {
       const container = document.getElementById('studi-container');
+      if (typeof Sortable === 'undefined') return;
       new Sortable(container, {
           animation: 300,
           handle: '.studio-card',
@@ -339,8 +339,35 @@
       });
     }
 
-    renderStudi();
-    initDragDrop();
+    /* I18N ENHANCEMENTS */
+    function updateGreetings() {
+        const hour = new Date().getHours();
+        let greetingKey = "greeting_morning";
+        if (hour >= 12 && hour < 18) greetingKey = "greeting_afternoon";
+        if (hour >= 18) greetingKey = "greeting_evening";
+
+        const profile = JSON.parse(localStorage.getItem('cf_profile') || '{"name":"Il Capo"}');
+        document.getElementById('greetingUser').innerHTML = `${t(greetingKey)}, ${profile.name} 👋`;
+
+        const count = dbStudi.length;
+        const countText = count === 1 ? t('studio_active') : t('studios_active');
+        document.getElementById('studiosStatus').textContent = `Hai ${count} ${countText} — ${t('choose_work')}`;
+    }
+
+    document.addEventListener('langChanged', () => {
+        applyTranslations();
+        updateGreetings();
+        renderStudi();
+    });
+
+    import { applyTranslations, t } from "./src/core/i18n.js";
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        applyTranslations();
+        updateGreetings();
+        renderStudi();
+        initDragDrop();
+    });
 
 
     /* ========================================================

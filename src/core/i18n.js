@@ -45,7 +45,25 @@ export const translations = {
     roadmap: "Roadmap",
     settings: "Impostazioni",
     global_log: "Log globale",
-    statistics: "Statistiche"
+    statistics: "Statistiche",
+    studio_active: "studio attivo",
+    studios_active: "studi attivi",
+    choose_work: "Scegli dove lavorare oggi",
+    roadmap_sub: "Avanzamento & Milestone",
+    settings_sub: "Temi • Profilo • API Keys",
+    log_sub: "Attività da tutti gli studi",
+    stats_sub: "Social • Views • Hype",
+    your_studios: "I Tuoi Studi",
+    online: "Online",
+    logout: "Esci",
+    new_studio: "Nuovo studio",
+    new_studio_sub: "Scegli il layout o trascina qui i componenti per fondare l'azienda",
+    sync_status: "Sincronizzato",
+    choose_base: "Scegli la tua Base",
+    choose_base_sub: "I 4 Layout Editoriali più potenti del V10",
+    greeting_morning: "Buongiorno",
+    greeting_afternoon: "Buon pomeriggio",
+    greeting_evening: "Buonasera"
   },
   en: {
     // Shared
@@ -92,7 +110,25 @@ export const translations = {
     roadmap: "Roadmap",
     settings: "Settings",
     global_log: "Global Log",
-    statistics: "Statistics"
+    statistics: "Statistics",
+    studio_active: "active studio",
+    studios_active: "active studios",
+    choose_work: "Choose where to work today",
+    roadmap_sub: "Progress & Milestones",
+    settings_sub: "Themes • Profile • API Keys",
+    log_sub: "Activities from all studios",
+    stats_sub: "Social • Views • Hype",
+    your_studios: "Your Studios",
+    online: "Online",
+    logout: "Logout",
+    new_studio: "New studio",
+    new_studio_sub: "Choose the layout or drag components here to start your business",
+    sync_status: "Synced",
+    choose_base: "Choose your Base",
+    choose_base_sub: "The 4 most powerful editorial layouts of V10",
+    greeting_morning: "Good morning",
+    greeting_afternoon: "Good afternoon",
+    greeting_evening: "Good evening"
   },
   fr: {
     // Shared
@@ -139,7 +175,25 @@ export const translations = {
     roadmap: "Roadmap",
     settings: "Paramètres",
     global_log: "Log Global",
-    statistics: "Statistiques"
+    statistics: "Statistiques",
+    studio_active: "studio actif",
+    studios_active: "studios actifs",
+    choose_work: "Choisissez où travailler aujourd'hui",
+    roadmap_sub: "Progrès & Étapes",
+    settings_sub: "Thèmes • Profil • API Keys",
+    log_sub: "Activités de tous les studios",
+    stats_sub: "Social • Vues • Hype",
+    your_studios: "Vos Studios",
+    online: "En ligne",
+    logout: "Déconnexion",
+    new_studio: "Nouveau studio",
+    new_studio_sub: "Choisissez le layout ou glissez les composants ici pour créer l'entreprise",
+    sync_status: "Synchronisé",
+    choose_base: "Choisissez votre Base",
+    choose_base_sub: "Les 4 mises in page éditoriales les plus puissantes de V10",
+    greeting_morning: "Bonjour",
+    greeting_afternoon: "Bon après-midi",
+    greeting_evening: "Bonsoir"
   }
 };
 
