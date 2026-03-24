@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cluster Map Preview - Content Factory V10</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Mono:wght@400;500&family=Instrument+Serif:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f8f9fc;
+            --bg2: #ffffff;
+            --bg3: #f1f3f9;
+            --bg4: #e2e8f0;
+            --border: rgba(0,0,0,0.06);
+            --border2: rgba(0,0,0,0.1);
+            --text: #1e293b;
+            --dim: #64748b;
+            --mid: #475569;
+            --accent: #f59e0b;
+            --accent2: #d97706;
+            --green: #10b981;
+            --orange: #f97316;
+            --blue: #3b82f6;
+            --purple: #8b5cf6;
+            --pink: #ec4899;
+            --radius: 24px;
+            --shadow: 0 10px 40px rgba(0,0,0,0.04);
+            --glass: rgba(255, 255, 255, 0.7);
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { 
+            font-family: 'DM Sans', sans-serif; 
+            background: var(--bg); 
+            color: var(--text);
+            padding: 40px;
+            min-height: 100vh;
+            background-image: radial-gradient(at 0% 0%, rgba(245, 158, 11, 0.05) 0px, transparent 50%),
+                              radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.05) 0px, transparent 50%);
+        }
+
+        .preview-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .greeting {
+            font-family: 'Instrument Serif', serif;
+            font-size: 3rem;
+            line-height: 1;
+            letter-spacing: -0.02em;
+        }
+
+        .sub {
+            color: var(--dim);
+            font-size: 1rem;
+            margin-top: 8px;
+            font-family: 'DM Mono', monospace;
+        }
+
+        /* CONTROL ROOM LAYOUT */
+        .control-room-layout {
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            grid-template-rows: 1fr 240px;
+            gap: 25px;
+            height: 750px;
+        }
+
+        .cr-monitor {
+            grid-row: 1 / 3;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .card-hdr {
+            padding: 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255,255,255,0.4);
+        }
+
+        .card-title {
+            font-weight: 800;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--mid);
+        }
+
+        .ac-count {
+            background: var(--text);
+            color: #fff;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            font-family: 'DM Mono', monospace;
+            font-weight: 700;
+        }
+
+        .monitor-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .monitor-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .monitor-item:hover { 
+            background: rgba(255,255,255,0.6); 
+            transform: translateX(5px);
+        }
+
+        .mi-av {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            background: var(--bg3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            position: relative;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .mi-av::after {
+            content: '';
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 3px solid #fff;
+        }
+
+        .mi-av.online::after { background: var(--green); box-shadow: 0 0 10px var(--green); }
+        .mi-av.busy::after { background: var(--orange); }
+
+        .mi-info { flex: 1; }
+        .mi-name { font-weight: 700; font-size: 1rem; letter-spacing: -0.01em; }
+        .mi-status { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--dim); margin-top: 3px; }
+
+        /* MAP AREA */
+        .cr-map-area {
+            background: #0f172a; /* Deep Space for the Map as requested in original style */
+            border-radius: var(--radius);
+            border: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow), inset 0 0 80px rgba(0,0,0,0.3);
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 70%),
+                radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 100% 100%, 40px 40px;
+        }
+
+        #flowContainer {
+            width: 100%;
+            height: 100%;
+        }
+
+        .map-legend {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(10px);
+            padding: 8px 15px;
+            border-radius: 15px;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.6rem;
+            display: flex;
+            gap: 15px;
+            border: 1px solid var(--border);
+            pointer-events: none;
+        }
+
+        /* COMM HUB */
+        .cr-comm-hub {
+            background: var(--bg2);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .comm-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .comm-label {
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: var(--dim);
+            letter-spacing: 0.05em;
+        }
+
+        .comm-feed {
+            height: 100px;
+            background: var(--bg3);
+            border-radius: 12px;
+            padding: 15px;
+            overflow-y: auto;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .comm-msg { line-height: 1.4; }
+        .comm-msg b { color: var(--accent2); }
+
+        .comm-input-wrap {
+            display: flex;
+            gap: 10px;
+        }
+
+        .comm-input {
+            flex: 1;
+            padding: 12px 18px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--bg3);
+            outline: none;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .comm-input:focus { border-color: var(--accent); background: #fff; }
+
+        .comm-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: var(--text);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        /* SVG NODE STYLES */
+        .flow-node circle { transition: stroke-width 0.2s; }
+        .flow-node:hover circle { stroke-width: 4px; }
+        .flow-node text { pointer-events: none; }
+    </style>
+</head>
+<body>
+
+<div class="preview-container">
+    <div class="header">
+        <div>
+            <div class="greeting">Studio Control Room</div>
+            <div class="sub">Gestione Operativa Multi-Agente • Preview V9 Logic</div>
+        </div>
+        <div style="display:flex; gap:10px;">
+            <button style="padding:10px 20px; border-radius:12px; background:var(--bg2); border:1px solid var(--border); font-weight:700; font-size:0.75rem; cursor:pointer;" onclick="FlowEngine.savePositions()">💾 Salva Posizioni</button>
+            <button style="padding:10px 20px; border-radius:12px; background:var(--text); color:#fff; border:none; font-weight:700; font-size:0.75rem; cursor:pointer;">+ Evoca Agente</button>
+        </div>
+    </div>
+
+    <div class="control-room-layout">
+        <!-- MONITOR -->
+        <div class="cr-monitor">
+            <div class="card-hdr">
+                <div class="card-title">🤖 Monitor Agenti</div>
+                <div class="ac-count" id="agentCount">6</div>
+            </div>
+            <div class="monitor-list" id="monitorList">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
+        <!-- MAP -->
+        <div class="cr-map-area">
+            <div id="flowContainer"></div>
+            <div class="map-legend">
+                <div style="display:flex; align-items:center; gap:5px;"><span style="width:6px; height:6px; border-radius:50%; background:var(--accent);"></span> Attivo</div>
+                <div style="display:flex; align-items:center; gap:5px;"><span style="width:6px; height:6px; border-radius:50%; background:var(--dim);"></span> In attesa</div>
+                <div style="opacity:0.6;">Trascina per spostare</div>
+            </div>
+        </div>
+
+        <!-- COMM HUB -->
+        <div class="cr-comm-hub">
+            <div class="comm-header">
+                <div class="comm-label">📢 Sala Comunicazione</div>
+                <div style="font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--green);">● Team Online</div>
+            </div>
+            <div class="comm-feed" id="commFeed">
+                <div class="comm-msg" style="opacity:0.5; text-align:center;">Benvenuto nella Sala di Controllo. Team pronto.</div>
+            </div>
+            <div class="comm-input-wrap">
+                <input type="text" class="comm-input" placeholder="Chiedi qualcosa al team..." id="commInput">
+                <button class="comm-btn" onclick="sendMsg()">➤</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// MOCK DATA consistent with V9
+window.AGENTS_DATA = [
+    { id: 'director', role: 'Director', icon: '👑', color: 'var(--text)', status: 'run' },
+    { id: 'scrittore', role: 'Scrittore', icon: '✍️', color: 'var(--blue)', status: 'run' },
+    { id: 'musicale', role: 'Musicale', icon: '🎵', color: 'var(--orange)', status: 'wait' },
+    { id: 'visual', role: 'Visual', icon: '🎨', color: 'var(--pink)', status: 'done' },
+    { id: 'cipher', role: 'Cipher', icon: '🛡️', color: 'var(--green)', status: 'run' },
+    { id: 'consulente', role: 'Consulente', icon: '📖', color: 'var(--purple)', status: 'wait' }
+];
+
+const FlowEngine = {
+    canvasId: 'flowCanvas',
+    nodes: [],
+    links: [],
+    draggingNode: null,
+    offset: { x: 0, y: 0 },
+
+    init(containerId) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        
+        container.innerHTML = `
+            <svg id="${this.canvasId}" width="100%" height="100%" viewBox="0 0 800 500" style="overflow:visible; user-select:none;">
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="25" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="var(--dim)" />
+                    </marker>
+                    <filter id="glow">
+                        <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+                        <feMerge>
+                            <feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                </defs>
+                <g id="linksLayer"></g>
+                <g id="nodesLayer"></g>
+            </svg>
+        `;
+
+        const svg = document.getElementById(this.canvasId);
+        svg.addEventListener('mousemove', (e) => this.onDrag(e));
+        svg.addEventListener('mouseup', () => this.stopDrag());
+        svg.addEventListener('mouseleave', () => this.stopDrag());
+        
+        this.generateFlow();
+        renderMonitor();
+    },
+
+    generateFlow() {
+        // Sample positions if not saved
+        const centerX = 400;
+        const centerY = 250;
+        const radius = 160;
+
+        // User Node at center
+        const userNode = {
+            id: 'user_me',
+            x: centerX,
+            y: centerY,
+            label: 'Capo',
+            emoji: '🦁',
+            color: 'var(--accent)',
+            type: 'user'
+        };
+
+        this.nodes = [userNode];
+        window.AGENTS_DATA.forEach((agent, i) => {
+            const angle = (i / window.AGENTS_DATA.length) * Math.PI * 2;
+            const node = {
+                id: agent.id,
+                x: centerX + radius * Math.cos(angle),
+                y: centerY + radius * Math.sin(angle),
+                label: agent.role,
+                emoji: agent.icon,
+                color: agent.color,
+                status: agent.status,
+                type: 'agent'
+            };
+            this.nodes.push(node);
+        });
+
+        this.links = window.AGENTS_DATA.map(agent => ({
+            source: agent.id,
+            target: 'user_me',
+            status: agent.status
+        }));
+
+        this.render();
+    },
+
+    render() {
+        const nodesLayer = document.getElementById('nodesLayer');
+        const linksLayer = document.getElementById('linksLayer');
+        if (!nodesLayer || !linksLayer) return;
+
+        linksLayer.innerHTML = this.links.map((link, i) => {
+            const s = this.nodes.find(n => n.id === link.source);
+            const t = this.nodes.find(n => n.id === link.target);
+            if (!s || !t) return '';
+            
+            const isActive = link.status === 'run';
+            const stroke = isActive ? 'var(--accent)' : 'var(--border2)';
+            const opacity = isActive ? '0.6' : '0.2';
+            
+            return `
+                <path d="M ${s.x} ${s.y} L ${t.x} ${t.y}" stroke="${stroke}" stroke-width="2" fill="none" opacity="${opacity}" marker-end="url(#arrowhead)" />
+                ${isActive ? `
+                <circle r="3" fill="var(--accent)" style="filter:url(#glow)">
+                    <animateMotion dur="3s" repeatCount="indefinite" path="M ${s.x} ${s.y} L ${t.x} ${t.y}" begin="${i * 0.5}s" />
+                </circle>` : ''}
+            `;
+        }).join('');
+
+        nodesLayer.innerHTML = this.nodes.map(node => `
+            <g class="flow-node" transform="translate(${node.x}, ${node.y})" 
+               style="cursor:grab;" 
+               onmousedown="FlowEngine.startDrag(event, '${node.id}')">
+                <circle r="30" fill="var(--bg2)" stroke="${node.color}" stroke-width="2" style="filter: drop-shadow(0 4px 10px rgba(0,0,0,0.1))" />
+                <text y="7" text-anchor="middle" font-size="24px">${node.emoji}</text>
+                <text y="45" text-anchor="middle" fill="var(--text)" font-size="10px" font-weight="700" style="text-transform:uppercase; letter-spacing:0.04em;">${node.label}</text>
+            </g>
+        `).join('');
+    },
+
+    startDrag(e, id) {
+        e.preventDefault();
+        const node = this.nodes.find(n => n.id === id);
+        if (!node) return;
+        this.draggingNode = node;
+        
+        const svg = document.getElementById(this.canvasId);
+        const pt = svg.createSVGPoint();
+        pt.x = e.clientX;
+        pt.y = e.clientY;
+        const loc = pt.matrixTransform(svg.getScreenCTM().inverse());
+        
+        this.offset.x = loc.x - node.x;
+        this.offset.y = loc.y - node.y;
+    },
+
+    onDrag(e) {
+        if (!this.draggingNode) return;
+        
+        const svg = document.getElementById(this.canvasId);
+        const pt = svg.createSVGPoint();
+        pt.x = e.clientX;
+        pt.y = e.clientY;
+        const loc = pt.matrixTransform(svg.getScreenCTM().inverse());
+        
+        this.draggingNode.x = loc.x - this.offset.x;
+        this.draggingNode.y = loc.y - this.offset.y;
+        this.render();
+    },
+
+    stopDrag() {
+        this.draggingNode = null;
+    },
+
+    savePositions() {
+        alert("Posizioni salvate nel database simulato!");
+    }
+};
+
+function renderMonitor() {
+    const list = document.getElementById('monitorList');
+    list.innerHTML = window.AGENTS_DATA.map(a => `
+        <div class="monitor-item">
+            <div class="mi-av ${a.status === 'run' ? 'online' : (a.status === 'wait' ? 'busy' : '')}">${a.icon}</div>
+            <div class="mi-info">
+                <div class="mi-name">${a.role}</div>
+                <div class="mi-status">${a.status === 'run' ? 'Operativo' : (a.status === 'wait' ? 'In pausa' : 'Pronto')}</div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function sendMsg() {
+    const input = document.getElementById('commInput');
+    if(!input.value) return;
+    const feed = document.getElementById('commFeed');
+    feed.innerHTML += `<div><b>Tu:</b> ${input.value}</div>`;
+    input.value = '';
+    feed.scrollTop = feed.scrollHeight;
+    
+    // Fake agent reply
+    setTimeout(() => {
+        feed.innerHTML += `<div><b>Director:</b> Ricevuto Capo. Aggiorno la flotta.</div>`;
+        feed.scrollTop = feed.scrollHeight;
+    }, 800);
+}
+
+// Start
+FlowEngine.init('flowContainer');
+
+</script>
+</body>
+</html>
