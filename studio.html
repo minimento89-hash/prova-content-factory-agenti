@@ -6,310 +6,307 @@
   <title data-t="studio_title">Content Factory V10 — Studio</title>
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <link rel="stylesheet" href="styles.css">
-  <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
   
   <style>
-    /* LAYOUT BASE V10: Restoration of Classic Studio Sidebar */
+    /* STUDIO V10: FIX LAYOUT & CONTROL ROOM */
     body { display: flex; height: 100vh; overflow: hidden; margin: 0; background: var(--bg-core); font-family: 'Inter', sans-serif; }
     
-    /* SIDEBAR CLASSICA RESTAURATA */
+    /* SIDEBAR NAVIGAZIONE CHIARA */
     .studio-sidebar-v10 {
       width: 260px; border-right: 1px solid var(--border-light); background: var(--bg-surface);
-      display: flex; flex-direction: column; overflow-y: auto; box-shadow: 10px 0 30px rgba(0,0,0,0.02);
-      z-index: 10; flex-shrink: 0;
+      display: flex; flex-direction: column; z-index: 10; flex-shrink: 0;
     }
-    .ss-brand { padding: 32px 24px; border-bottom: 2px solid var(--border-light); background: white; cursor: pointer; display:flex; align-items:center; gap:12px;}
-    .ss-brand-ic { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, var(--accent-primary), #db2777); color: white; display:flex; align-items:center; justify-content:center; font-size: 20px;}
-    .ss-brand-name { font-family: var(--font-serif); font-size: 22px; color: var(--text-main); }
+    .ss-brand { height: 88px; border-bottom: 2px solid var(--border-light); padding: 0 24px; display:flex; align-items:center; gap:12px; }
+    .ss-brand-ic { width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, var(--accent-primary), #db2777); color: white; display:flex; align-items:center; justify-content:center; font-size: 18px;}
+    .ss-brand-name { font-family: var(--font-serif); font-size: 20px; color: var(--text-main); }
 
     .ss-nav { padding: 24px 12px; flex: 1; }
-    .ss-lbl { font-size: 10px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.1em; padding: 0 12px; margin-bottom: 12px; display: block;}
-    .ss-item { 
-      padding: 12px 14px; border-radius: 12px; display: flex; align-items: center; gap: 12px; 
-      color: var(--text-muted); text-decoration: none; font-size: 13px; font-weight: 600; margin-bottom: 4px; transition: all 0.2s;
-    }
+    .ss-lbl { font-size: 10px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); opacity:0.6; padding: 0 12px; margin-bottom: 8px; display: block;}
+    .ss-item { padding: 10px 14px; border-radius: 10px; display: flex; align-items: center; gap: 10px; color: var(--text-muted); text-decoration: none; font-size: 13px; font-weight: 600; margin-bottom: 4px; transition: 0.2s; }
     .ss-item:hover { background: var(--bg-core); color: var(--text-main); }
-    .ss-item.active { background: var(--accent-light); color: var(--accent-primary); border: 1px solid rgba(139,92,246,0.1); }
-    .ss-item-ic { font-size: 18px; }
+    .ss-item.active { background: var(--accent-light); color: var(--accent-primary); }
 
-    .ss-footer { padding: 20px; border-top: 1px solid var(--border-light); }
-    .btn-back-hub { width: 100%; padding: 12px; border: 1px solid var(--border-light); background: white; border-radius: 12px; font-size: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; display:flex; align-items:center; justify-content:center; gap: 8px; transition: all 0.2s;}
-    .btn-back-hub:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
+    /* STAGE CENTRALE CORRETTO (No sputtanato) */
+    .studio-stage { flex: 1; display:flex; flex-direction:column; overflow: hidden; background: var(--bg-core); }
+    .stage-hdr { height: 88px; padding: 0 40px; border-bottom: 2px solid var(--border-light); background: rgba(248, 250, 252, 0.82); backdrop-filter: blur(24px); display:flex; justify-content:space-between; align-items:center; box-sizing: border-box;}
+    .stage-title { font-family: var(--font-serif); font-size: 26px; color: var(--text-main); margin: 0; }
 
-    /* STUDIO MAIN STAGE */
-    .studio-stage { flex: 1; display:flex; flex-direction:column; overflow-y: auto; background: var(--bg-core); }
-    .stage-hdr { padding: 24px 40px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; background: rgba(248, 250, 252, 0.82); backdrop-filter: blur(24px); z-index: 100; border-bottom: 1px solid var(--border-light);}
-    .stage-title { font-family: var(--font-serif); font-size: 28px; color: var(--text-main); }
+    .dashboard-scroll { flex: 1; overflow-y: auto; padding: 40px; }
+    .dashboard-grid-v10 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1400px; margin: 0 auto;}
 
-    /* KPIS & WIDGETS */
-    .dashboard-grid-v10 { padding: 40px; }
+    /* KPIS RESTORED */
+    .widget-v10 { background: white; border: 1px solid var(--border-light); border-radius: 20px; padding: 30px; box-shadow: var(--shadow-glass); position: relative;}
+    .wd-lbl { font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 20px;}
+    .wd-main { font-size: 38px; font-weight: 800; color: var(--text-main); line-height: 1; }
+    .wd-sub { font-size: 11px; color: var(--text-muted); margin-top: 10px; font-weight: 600;}
 
-    /* AGENT OVERLAY V10: 3 Panels Resizable Mind Map */
-    .agent-overlay-v10 {
-      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(28px);
-      z-index: 3000; display: none; align-items: center; justify-content: center;
-      opacity: 0; transition: opacity 0.4s ease;
+    /* MIND MAP OVERLAY: IMPROVED & HUGE */
+    .ao-overlay-full {
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(32px);
+      z-index: 5000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.4s;
     }
-    .agent-overlay-v10.show { display: flex; opacity: 1; }
+    .ao-overlay-full.show { display: flex; opacity: 1; }
 
-    .ao-glass {
-      background: white; border-radius: 40px; width: 96%; max-width: 1300px; height: 88vh;
-      display: flex; overflow: hidden; box-shadow: 0 40px 100px rgba(0,0,0,0.25);
-      transform: scale(0.97); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    .ao-window {
+      background: white; border-radius: 40px; width: 95vw; height: 90vh;
+      display: flex; overflow: hidden; box-shadow: 0 50px 120px rgba(0,0,0,0.3);
+      position: relative; transform: scale(0.98); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .agent-overlay-v10.show .ao-glass { transform: scale(1); }
+    .ao-overlay-full.show .ao-window { transform: scale(1); }
 
-    /* Left: Chat Resizable */
-    .ao-chat { width: 380px; min-width: 300px; border-right: 1px solid var(--border-light); display: flex; flex-direction: column; background: var(--bg-surface); position: relative;}
-    .ao-msgs { flex: 1; padding: 24px; overflow-y: auto; display:flex; flex-direction: column; gap: 16px; }
-    .msg-ao { max-width: 85%; padding: 14px 18px; border-radius: 18px; font-size: 14px; line-height: 1.5; box-shadow: var(--shadow-glass); }
-    .msg-ao.bot { background: white; border: 1px solid var(--border-light); align-self: flex-start; border-bottom-left-radius: 4px; }
-    .msg-ao.user { background: var(--accent-primary); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
-    .ao-inp-area { padding: 24px; background: white; border-top: 1px solid var(--border-light); }
-    .ao-pill { display: flex; background: var(--bg-core); border-radius: 100px; padding: 6px 6px 6px 20px; border: 1px solid var(--border-light); box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
-    .ao-pill input { flex: 1; border: none; background: transparent; outline: none; font-size: 14px; }
-    
-    /* Center: Mind Map (The Heart) */
-    .ao-map { flex: 1; position: relative; background: radial-gradient(circle at center, #f1f5f9 0%, #ffffff 100%); overflow: hidden; }
+    /* CLOSE X POSITION TO THE RIGHT */
+    .ao-close {
+      position: absolute; top: 30px; right: 40px; width: 44px; height: 44px; border-radius: 50%;
+      background: var(--bg-core); border: 1px solid var(--border-light); color: var(--text-muted);
+      cursor: pointer; display:flex; align-items:center; justify-content:center; font-size: 24px; z-index: 1000; transition: 0.2s;
+    }
+    .ao-close:hover { background: #fee2e2; color: #ef4444; border-color: #fecaca; transform: rotate(90deg); }
+
+    /* Map Space (The Huge Area) */
+    .ao-map-canvas { flex: 1; position: relative; background: #fdfdfd; overflow: hidden; cursor: crosshair; }
     .ao-map-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
-    .node-v10 {
-      position: absolute; width: 110px; height: 110px; border-radius: 50%; background: white;
-      border: 1px solid var(--border-light); display: flex; flex-direction: column; align-items: center; justify-content: center;
-      box-shadow: 0 14px 30px rgba(0,0,0,0.06); z-index: 5; transition: transform 0.2s; cursor: grab; padding: 8px; text-align: center;
-    }
-    .node-v10:hover { transform: scale(1.05); border-color: var(--accent-primary); }
-    .node-v10.core { border-width: 2px; border-color: var(--accent-primary); box-shadow: 0 0 30px rgba(139,92,246,0.1); }
-    .ni { font-size: 28px; color: var(--accent-primary); margin-bottom: 4px; }
-    .nn { font-size: 10px; font-weight: 800; text-transform: uppercase; color: var(--text-main); }
-    
-    /* Right: Agent Monitor */
-    .ao-monitor { width: 300px; min-width: 250px; border-left: 1px solid var(--border-light); display:flex; flex-direction: column; background: #f8fafc; }
-    .aom-hdr { padding: 24px; border-bottom: 1px solid var(--border-light); background: white;}
-    .aom-list { flex: 1; padding: 20px; overflow-y: auto; }
-    .aom-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; background: white; border: 1px solid var(--border-light); border-radius: 12px; margin-bottom: 10px; box-shadow: var(--shadow-glass); }
-    .aom-name { font-size: 12px; font-weight: 700; color: var(--text-main); }
-    .aom-dot { width: 8px; height: 8px; border-radius: 50%; box-shadow: 0 0 8px rgba(0,0,0,0.1); }
-    .aom-dot.green { background: #10b981; box-shadow: 0 0 10px #10b981; }
-    .aom-dot.red { background: #ef4444; box-shadow: 0 0 10px #ef4444; }
-    .aom-dot.gray { background: #94a3b8; }
 
-    /* Connections Styling */
-    .wire-p { stroke: var(--accent-primary); stroke-width: 2; fill: none; opacity: 0.3; stroke-dasharray: 4 4; animation: wireFlow 20s infinite linear; }
-    @keyframes wireFlow { to { stroke-dashoffset: -100; } }
+    /* Chat Panel (Resizable Column) */
+    .ao-chat-panel { width: 380px; border-right: 1px solid var(--border-light); display:flex; flex-direction: column; background: white; z-index: 5; }
+    .ao-chat-hdr { padding: 30px; border-bottom: 1px solid var(--border-light); }
+    .ao-chat-msgs { flex: 1; padding: 24px; overflow-y: auto; display:flex; flex-direction: column; gap: 15px; }
+
+    /* NODES SCALE DOWN (80px) & DRAG */
+    .node-map {
+      position: absolute; width: 85px; height: 85px; border-radius: 50%; background: white;
+      border: 1px solid var(--border-light); display:flex; flex-direction: column; align-items:center; justify-content:center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.06); cursor: grab; z-index: 10; user-select: none;
+    }
+    .node-map.core { border-width: 2px; border-color: var(--accent-primary); box-shadow: 0 0 20px rgba(139,92,246,0.15); }
+    .node-map:active { cursor: grabbing; z-index: 100; }
+    .node-map .ni { font-size: 24px; color: var(--accent-primary); margin-bottom: 2px;}
+    .node-map .nn { font-size: 9px; font-weight: 800; text-transform: uppercase; color: var(--text-main); }
+
+    .node-map.dragging { transform: scale(1.1); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+
+    /* CONNECTIONS V9 STYLE (Energetic) */
+    .wire-glow { stroke: var(--accent-primary); stroke-width: 3; fill: none; opacity: 0.4; stroke-dasharray: 6 3; filter: drop-shadow(0 0 4px var(--accent-primary)); animation: flowData 10s infinite linear; }
+    @keyframes flowData { from { stroke-dashoffset: 200; } to { stroke-dashoffset: 0; } }
+
+    /* Operator List (Right Sidebar in Modal) */
+    .ao-operators { width: 280px; border-left: 1px solid var(--border-light); padding: 24px; background: #f8fafc; z-index: 5; }
   </style>
 </head>
 <body>
 
-  <!-- SIDEBAR CLASSICA (V9 RE-EVOLVED) -->
-  <aside class="studio-sidebar-v10" id="studioSidebar">
+  <!-- SIDEBAR CLASSICA RESTORED -->
+  <aside class="studio-sidebar-v10">
     <div class="ss-brand" onclick="location.href='launcher.html'">
       <div class="ss-brand-ic"><i class="ph-fill ph-sparkle"></i></div>
       <div class="ss-brand-name">Factory V10</div>
     </div>
-
     <nav class="ss-nav">
       <span class="ss-lbl">Core Occupancy</span>
-      <a href="#" class="ss-item active"><i class="ph ph-squares-four ss-item-ic"></i> Dashboard</a>
-      <a href="#" class="ss-item"><i class="ph ph-user-focus ss-item-ic"></i> Monitor Agenti</a>
-      
+      <a href="#" class="ss-item active"><i class="ph ph-squares-four"></i> Dashboard</a>
+      <a href="#" class="ss-item"><i class="ph ph-user-focus"></i> Monitor Agenti</a>
       <span class="ss-lbl">Produzione</span>
-      <a href="#" class="ss-item"><i class="ph ph-pen-nib ss-item-ic"></i> Redazione Team</a>
-      <a href="#" class="ss-item"><i class="ph ph-bezier-curve ss-item-ic"></i> Mixer Strategie</a>
-      
-      <span class="ss-lbl">Distribuzione</span>
-      <a href="#" class="ss-item"><i class="ph ph-share-network ss-item-ic"></i> Social Hub</a>
-      <a href="#" class="ss-item"><i class="ph ph-chart-line-up ss-item-ic"></i> Sentiment Tech</a>
-
-      <span class="ss-lbl">Privato</span>
-      <a href="#" class="ss-item"><i class="ph ph-shield-check ss-item-ic"></i> Cyber Security</a>
-      <a href="#" class="ss-item"><i class="ph ph-coffee ss-item-ic"></i> Sala Relax RM</a>
+      <a href="#" class="ss-item"><i class="ph ph-pen-nib"></i> Redazione</a>
+      <a href="#" class="ss-item"><i class="ph ph-bezier-curve"></i> Strategie</a>
     </nav>
-
-    <div class="ss-footer">
-      <button class="btn-back-hub" onclick="location.href='launcher.html'"><i class="ph ph-house"></i> Launcher Hub</button>
+    <div style="padding:20px; border-top:1px solid var(--border-light);">
+      <button class="sp-add-btn" style="width:100%;" onclick="location.href='launcher.html'"><i class="ph ph-house"></i> Hub Launcher</button>
     </div>
   </aside>
 
-  <!-- STAGE PRINCIPALE -->
+  <!-- MAIN STAGE -->
   <main class="studio-stage">
     <header class="stage-hdr">
-      <h1 class="stage-title" id="studioTitle">Benvenuto nello Studio</h1>
+      <h1 class="stage-title" id="studioNameTitle">Caricamento Studio...</h1>
       <div style="display:flex; gap:12px;">
-        <button class="hub-logout" style="width:40px; height:40px; background:white; color:var(--text-main); border:1px solid var(--border-light); font-size:20px; box-shadow:var(--shadow-glass); position:relative;" onclick="openMindMap()">
-          <i class="ph ph-chat-circle-dots"></i>
-          <span style="position:absolute; top:-4px; right:-4px; background:#ef4444; color:white; font-size:9px; width:16px; height:16px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800;">3</span>
+        <button class="sp-add-btn" style="width:44px; height:44px; display:flex; align-items:center; justify-content:center; padding:0; border-radius:50%;" onclick="openControlRoom()">
+          <i class="ph ph-chat-circle-dots" style="font-size:24px;"></i>
         </button>
-        <button class="hub-logout" style="width:40px; height:40px; background:white; color:var(--text-main); border:1px solid var(--border-light); font-size:20px; box-shadow:var(--shadow-glass);"><i class="ph ph-gear-six"></i></button>
+        <button class="sp-add-btn" style="width:44px; height:44px; display:flex; align-items:center; justify-content:center; padding:0; border-radius:50%; background:white; color:var(--text-main); border-color:var(--border-light);">
+          <i class="ph ph-gear-six" style="font-size:24px;"></i>
+        </button>
       </div>
     </header>
 
-    <div class="dashboard-grid-v10">
-      <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:24px;">
-        <!-- KPI 1 -->
-        <div class="widget-box" style="padding:24px;">
-          <div class="wd-title">Live Score Studio</div>
-          <div class="wd-value">842</div>
-          <div class="wd-label">HYPE • POSITIVO</div>
+    <div class="dashboard-scroll">
+      <div class="dashboard-grid-v10">
+        <div class="widget-v10">
+          <div class="wd-lbl">Live Score Studio</div>
+          <div class="wd-main">842</div>
+          <div class="wd-sub">HYPE GLOBALE • POSITIVO</div>
         </div>
-        <!-- KPI 2 -->
-        <div class="widget-box" style="padding:24px;">
-          <div class="wd-title">Social Queue</div>
-          <div class="wd-value">12</div>
-          <div class="wd-label">POST PRONTI IN CODA</div>
+        <div class="widget-v10">
+          <div class="wd-lbl">Social Queue</div>
+          <div class="wd-main">12</div>
+          <div class="wd-sub">POST PRONTI PER LOOP</div>
         </div>
-        <!-- KPI 3 -->
-        <div class="widget-box" style="padding:24px;">
-          <div class="wd-title">Status Security</div>
-          <div class="wd-value">100%</div>
-          <div class="wd-label">NO BUG • MODALITÀ SICURA</div>
+        <div class="widget-v10">
+          <div class="wd-lbl">Sentinel Security</div>
+          <div class="wd-main">100%</div>
+          <div class="wd-sub">NO BUG • MODALITÀ SICURA</div>
         </div>
       </div>
     </div>
   </main>
 
-  <!-- AGENT INTERACTIVE WORKSPACE (3-PANELS OVERLAY) -->
-  <div class="agent-overlay-v10" id="aoOverlay">
-    <div class="ao-glass">
-      
-      <!-- LFT: CHAT -->
-      <div class="ao-chat" id="resizableChat">
-        <div style="padding:24px; border-bottom:1px solid var(--border-light); display:flex; justify-content:space-between; align-items:center; background:white;">
-          <h3 style="font-family:var(--font-serif); margin:0;">Sala Controllo</h3>
-          <button style="background:none; border:none; cursor:pointer; font-size:20px;" onclick="closeMindMap()"><i class="ph ph-x-circle"></i></button>
+  <!-- CONTROL ROOM OVERLAY (HUGE & DRAG/DROP) -->
+  <div class="ao-overlay-full" id="ctrlRoom">
+    <div class="ao-window">
+      <button class="ao-close" onclick="closeControlRoom()"><i class="ph ph-x"></i></button>
+
+      <!-- CHAT PANEL -->
+      <aside class="ao-chat-panel">
+        <div class="ao-chat-hdr">
+          <h2 style="font-family:var(--font-serif); margin:0;">Sala Controllo</h2>
+          <p style="font-size:11px; color:var(--text-muted); margin:4px 0 0 0;">Intelligence centralizzata</p>
         </div>
-        <div class="ao-msgs" id="aoMsgs">
-          <div class="msg-ao bot">Il team è ai tuoi ordini. Questa è la tua nuova **Sala di Controllo Multi-Agente**.</div>
+        <div class="ao-chat-msgs" id="aoLog">
+          <div style="background:#f1f5f9; padding:15px; border-radius:15px; font-size:13px; color:var(--text-main);">Ciao **Il Capo**. Sono pronto a mappare i tuoi nuovi agenti.</div>
         </div>
-        <div class="ao-inp-area">
-          <div class="ao-pill">
-            <input type="text" id="aoInp" placeholder="Ordina la creazione di un agente..." onkeypress="if(event.key==='Enter') sendAoMsg()">
-            <button style="width:36px; height:36px; border-radius:50%; background:var(--accent-primary); color:white; border:none; margin-right:4px; cursor:pointer;" onclick="sendAoMsg()"><i class="ph ph-paper-plane-right"></i></button>
+        <div style="padding:24px; border-top:1px solid var(--border-light);">
+          <div style="background:var(--bg-core); border-radius:100px; padding:6px 6px 6px 18px; border:1px solid var(--border-light); display:flex;">
+            <input type="text" placeholder="Invia comando..." style="flex:1; border:none; background:transparent; outline:none; font-size:14px;">
+            <button style="width:36px; height:36px; border-radius:50%; background:var(--accent-primary); border:none; color:white; cursor:pointer;"><i class="ph ph-paper-plane-right"></i></button>
           </div>
         </div>
-      </div>
+      </aside>
 
-      <!-- CTR: MIND MAP (CIRCULAR CLUSTER V9 STYLE) -->
-      <div class="ao-map" id="aoMap">
-        <svg class="ao-map-svg" id="aoMapSvg"></svg>
+      <!-- MAP CANVAS (DRAG & DROP REAL) -->
+      <div class="ao-map-canvas" id="mapCanvas">
+        <svg class="ao-map-svg" id="mapSvg"></svg>
         
-        <!-- CORE NODES (At the heart) -->
-        <div class="node-v10 core" id="node-user" style="top: 42%; left: 42%;">
-          <div class="ni" style="color:var(--text-main);"><i class="ph-fill ph-user-circle"></i></div>
+        <!-- CORE NODES (Heart) -->
+        <div class="node-map core" id="n-user" data-x="45" data-y="40">
+          <div class="ni"><i class="ph-fill ph-user-circle"></i></div>
           <div class="nn">Il Capo</div>
         </div>
-
-        <div class="node-v10 core" id="node-anti" style="top: 50%; left: 35%;">
+        <div class="node-map core" id="n-anti" data-x="35" data-y="55">
           <div class="ni" style="color:#8b5cf6;"><i class="ph-fill ph-sparkle"></i></div>
-          <div class="nn">Antigravity</div>
+          <div class="nn">Anti-Gravity</div>
         </div>
-
-        <div class="node-v10 core" id="node-claude" style="top: 50%; left: 50%;">
+        <div class="node-map core" id="n-claude" data-x="55" data-y="55">
           <div class="ni" style="color:#f59e0b;"><i class="ph-fill ph-star"></i></div>
           <div class="nn">Claude.ai</div>
         </div>
 
-        <!-- ORBITING NODES (Floating agents) -->
-        <div class="node-v10" id="node-designer" style="top: 20%; left: 25%;">
+        <!-- PERIPHERAL AGENTS -->
+        <div class="node-map" id="n-designer" data-x="20" data-y="30">
           <div class="ni"><i class="ph ph-paint-brush"></i></div>
-          <div class="nn">Designer</div>
+          <div class="nn">Aura-UI</div>
         </div>
-        <div class="node-v10" id="node-writer" style="top: 15%; left: 55%;">
+        <div class="node-map" id="n-writer" data-x="70" data-y="30">
           <div class="ni"><i class="ph ph-scroll"></i></div>
           <div class="nn">Writer</div>
         </div>
-        <div class="node-v10" id="node-dev" style="top: 65%; left: 60%;">
+        <div class="node-map" id="n-dev" data-x="45" data-y="80">
           <div class="ni"><i class="ph ph-code"></i></div>
-          <div class="nn">Dev-Fix</div>
+          <div class="nn">Fix-Dev</div>
         </div>
       </div>
 
-      <!-- RGT: MONITOR AGENTI -->
-      <div class="ao-monitor">
-        <div class="aom-hdr">
-          <div style="font-size:11px; font-weight:800; text-transform:uppercase; color:var(--text-muted); letter-spacing:0.12em;">Monitor Operativo</div>
+      <!-- OPERATORS LIST -->
+      <aside class="ao-operators">
+        <div style="font-size:10px; font-weight:800; text-transform:uppercase; color:var(--text-muted); opacity:0.6; margin-bottom:20px;">Monitor Agenti Attivi</div>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div style="background:white; padding:12px; border-radius:12px; border:1px solid var(--border-light); display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:12px; font-weight:700;">Aura-Designer</span>
+            <div style="width:8px; height:8px; border-radius:50%; background:#10b981; box-shadow:0 0 10px #10b981;"></div>
+          </div>
+          <div style="background:white; padding:12px; border-radius:12px; border:1px solid var(--border-light); display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:12px; font-weight:700;">Logic-Dev</span>
+            <div style="width:8px; height:8px; border-radius:50%; background:#10b981; box-shadow:0 0 10px #10b981;"></div>
+          </div>
         </div>
-        <div class="aom-list" id="aomList">
-          <div class="aom-item"><div class="aom-name">Aura-Designer</div><div class="aom-dot green"></div></div>
-          <div class="aom-item"><div class="aom-name">Logic-Architect</div><div class="aom-dot green"></div></div>
-          <div class="aom-item"><div class="aom-name">Sentinel-Scanner</div><div class="aom-dot red"></div></div>
-          <div class="aom-item"><div class="aom-name">Scrittore (Sub)</div><div class="aom-dot gray"></div></div>
-        </div>
-      </div>
-
+      </aside>
     </div>
   </div>
 
   <script type="module">
-    import { applyTranslations, t } from "./src/core/i18n.js";
+    let draggingNode = null;
+    let offset = { x: 0, y: 0 };
 
-    window.openMindMap = () => {
-      document.getElementById('aoOverlay').classList.add('show');
-      setTimeout(renderWires, 500);
+    window.openControlRoom = () => {
+      document.getElementById('ctrlRoom').classList.add('show');
+      initNodes();
+      drawWires();
     }
-    window.closeMindMap = () => document.getElementById('aoOverlay').classList.remove('show');
+    window.closeControlRoom = () => document.getElementById('ctrlRoom').classList.remove('show');
 
-    function renderWires() {
-      const svg = document.getElementById('aoMapSvg');
+    function initNodes() {
+      const nodes = document.querySelectorAll('.node-map');
+      nodes.forEach(n => {
+        n.style.left = n.dataset.x + '%';
+        n.style.top = n.dataset.y + '%';
+        
+        n.onmousedown = (e) => {
+          draggingNode = n;
+          n.classList.add('dragging');
+          const rect = n.getBoundingClientRect();
+          offset.x = e.clientX - rect.left;
+          offset.y = e.clientY - rect.top;
+        };
+      });
+    }
+
+    document.onmousemove = (e) => {
+      if (draggingNode) {
+        const canvas = document.getElementById('mapCanvas');
+        const rect = canvas.getBoundingClientRect();
+        let posX = ((e.clientX - rect.left - offset.x) / rect.width) * 100;
+        let posY = ((e.clientY - rect.top - offset.y) / rect.height) * 100;
+        
+        draggingNode.style.left = posX + '%';
+        draggingNode.style.top = posY + '%';
+        draggingNode.dataset.x = posX;
+        draggingNode.dataset.y = posY;
+        drawWires();
+      }
+    };
+
+    document.onmouseup = () => {
+      if (draggingNode) draggingNode.classList.remove('dragging');
+      draggingNode = null;
+    };
+
+    function drawWires() {
+      const svg = document.getElementById('mapSvg');
       svg.innerHTML = '';
+      const canvas = document.getElementById('mapCanvas');
+      const rect = canvas.getBoundingClientRect();
+
       const conns = [
-        { from: 'node-user', to: 'node-anti' },
-        { from: 'node-user', to: 'node-claude' },
-        { from: 'node-anti', to: 'node-designer' },
-        { from: 'node-user', to: 'node-writer' },
-        { from: 'node-claude', to: 'node-dev' }
+        { f: 'n-user', t: 'n-anti' }, { f: 'n-user', t: 'n-claude' },
+        { f: 'n-anti', t: 'n-designer' }, { f: 'n-user', t: 'n-writer' },
+        { f: 'n-claude', t: 'n-dev' }
       ];
 
       conns.forEach(c => {
-        const e1 = document.getElementById(c.from).getBoundingClientRect();
-        const e2 = document.getElementById(c.to).getBoundingClientRect();
-        const rect = svg.getBoundingClientRect();
+        const fEl = document.getElementById(c.f);
+        const tEl = document.getElementById(c.t);
+        const fR = fEl.getBoundingClientRect();
+        const tR = tEl.getBoundingClientRect();
 
-        const x1 = (e1.left + e1.width/2) - rect.left;
-        const y1 = (e1.top + e1.height/2) - rect.top;
-        const x2 = (e2.left + e2.width/2) - rect.left;
-        const y2 = (e2.top + e2.height/2) - rect.top;
+        const x1 = (fR.left + fR.width/2) - rect.left;
+        const y1 = (fR.top + fR.height/2) - rect.top;
+        const x2 = (tR.left + tR.width/2) - rect.left;
+        const y2 = (tR.top + tR.height/2) - rect.top;
 
         const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
         const cpY = (y1 + y2) / 2;
         path.setAttribute("d", `M ${x1} ${y1} C ${x1} ${cpY}, ${x2} ${cpY}, ${x2} ${y2}`);
-        path.setAttribute("class", "wire-p");
+        path.setAttribute("class", "wire-glow");
         svg.appendChild(path);
       });
     }
 
-    window.sendAoMsg = () => {
-      const inp = document.getElementById('aoInp');
-      const box = document.getElementById('aoMsgs');
-      const v = inp.value.trim();
-      if(!v) return;
-
-      const userMsg = document.createElement('div');
-      userMsg.className = 'msg-ao user';
-      userMsg.innerHTML = v;
-      box.appendChild(userMsg);
-      inp.value = '';
-      box.scrollTop = box.scrollHeight;
-
-      setTimeout(() => {
-        const botMsg = document.createElement('div');
-        botMsg.className = 'msg-ao bot';
-        botMsg.innerHTML = `Istruzione passata a Claude e Antigravity. Generazione nuovo nodo in corso... <br><br><b>Ti serve uno "Scrittore" specializzato o un "Analista"?</b>`;
-        box.appendChild(botMsg);
-        box.scrollTop = box.scrollHeight;
-      }, 1000);
-    }
-
     document.addEventListener("DOMContentLoaded", () => {
-      applyTranslations();
       const params = new URLSearchParams(window.location.search);
       const sid = params.get('id');
       const db = JSON.parse(localStorage.getItem('v10_studi_cloud')) || [];
-      const info = db.find(s => s.id === sid);
-      if(info) document.getElementById('studioTitle').textContent = info.title;
-
-      window.addEventListener('resize', renderWires);
+      const st = db.find(s => s.id === sid);
+      if(st) document.getElementById('studioNameTitle').textContent = st.title;
+      
+      window.addEventListener('resize', drawWires);
     });
   </script>
-
 </body>
 </html>
