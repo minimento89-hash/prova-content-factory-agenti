@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Content Factory V10 — Login</title>
+  
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <link rel="stylesheet" href="styles.css">
+  
+  <style>
+    body {
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      overflow: hidden;
+    }
+    .bg-elements {
+      position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+    }
+    .blob-1 {
+      position: absolute; top: -10%; left: -10%; width: 50vw; height: 50vw;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .blob-2 {
+      position: absolute; bottom: -20%; right: -10%; width: 60vw; height: 60vw;
+      background: radial-gradient(circle, rgba(236, 72, 153, 0.08) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .login-card {
+      position: relative; z-index: 10;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 1);
+      border-radius: var(--radius-xl);
+      padding: 40px; width: 380px;
+      box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.1), 0 0 0 1px rgba(15, 23, 42, 0.05);
+      animation: floatUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes floatUp {
+      from { opacity: 0; transform: translateY(30px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .logo-row { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 30px; }
+    .logo-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent-primary), #d946ef);
+      color: white; display: flex; align-items: center; justify-content: center; font-size: 24px;
+      box-shadow: 0 8px 16px rgba(139, 92, 246, 0.2);
+    }
+    .logo-text { font-family: var(--font-serif); font-size: 24px; }
+
+    .avatar-sec { display: flex; flex-direction: column; align-items: center; margin-bottom: 30px; }
+    .avatar-img { 
+      width: 80px; height: 80px; border-radius: 50%;
+      background: white; border: 3px solid white;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+      display: flex; align-items: center; justify-content: center; font-size: 32px;
+      margin-bottom: 12px;
+    }
+    .user-name { font-family: var(--font-serif); font-size: 28px; line-height: 1; margin-bottom: 4px;}
+    .user-role { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); font-weight: 700; }
+
+    .pin-dots { display: flex; justify-content: center; gap: 12px; margin-bottom: 30px; }
+    .dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #cbd5e1; background: transparent; transition: all 0.2s;}
+    .dot.filled { border-color: var(--accent-primary); background: var(--accent-primary); transform: scale(1.1); box-shadow: 0 0 10px rgba(139,92,246,0.3); }
+    .dot.error { border-color: #ef4444; background: #ef4444; }
+    .dot.success { border-color: #10b981; background: #10b981; }
+
+    .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .nbtn { 
+      height: 60px; border-radius: 16px; background: white;
+      border: 1px solid var(--border-light); font-size: 20px; font-weight: 600;
+      color: var(--text-main); display: flex; flex-direction: column; align-items: center; justify-content: center;
+      cursor: pointer; transition: all 0.15s; box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    }
+    .nbtn:hover { background: var(--bg-surface-hover); border-color: rgba(139, 92, 246, 0.3); color: var(--accent-primary); transform: translateY(-2px);}
+    .nbtn:active { transform: translateY(0) scale(0.95); }
+    .nb-sub { font-size: 10px; color: var(--text-muted); font-weight: 400; font-family: monospace; letter-spacing: 0.05em; margin-top: 2px;}
+    .nbtn.special { font-size: 24px; color: var(--text-muted); }
+
+    .pin-hint { text-align: center; font-family: monospace; font-size: 11px; color: var(--text-muted); margin-top: 24px; }
+
+    /* Overlay */
+    .overlay {
+      position: absolute; inset: 0; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);
+      border-radius: var(--radius-xl); display: none; flex-direction: column; align-items: center; justify-content: center;
+      z-index: 20; opacity: 0; transition: opacity 0.3s;
+    }
+    .overlay.show { display: flex; opacity: 1; }
+    .success-icon { width: 80px; height: 80px; border-radius: 50%; background: #10b981; color: white; display: flex; align-items: center; justify-content: center; font-size: 40px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(16,185,129,0.3); animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);}
+    
+    @keyframes scaleIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  </style>
+</head>
+<body>
+
+  <div class="bg-elements">
+    <div class="blob-1"></div>
+    <div class="blob-2"></div>
+  </div>
+
+  <div class="login-card">
+    
+    <div class="overlay" id="successOverlay">
+      <div class="success-icon"><i class="ph-bold ph-check"></i></div>
+      <h2 style="font-family: var(--font-serif); font-size: 32px; margin-bottom: 8px;">Bentornato</h2>
+      <p style="color: var(--text-muted); font-size: 13px;">Caricamento hub centrale...</p>
+    </div>
+
+    <!-- LOGO -->
+    <div class="logo-row">
+      <div class="logo-icon"><i class="ph-fill ph-sparkle"></i></div>
+      <div class="logo-text">Factory V10</div>
+    </div>
+
+    <!-- AVATAR -->
+    <div class="avatar-sec">
+      <div class="avatar-img">🦁</div>
+      <div class="user-name">Il Capo</div>
+      <div class="user-role">Direttore Creativo</div>
+    </div>
+
+    <!-- PIN DOTS -->
+    <div class="pin-dots" id="dots">
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+
+    <!-- NUMPAD -->
+    <div class="numpad">
+      <button class="nbtn" onclick="press('1')">1</button>
+      <button class="nbtn" onclick="press('2')">2 <span class="nb-sub">ABC</span></button>
+      <button class="nbtn" onclick="press('3')">3 <span class="nb-sub">DEF</span></button>
+      <button class="nbtn" onclick="press('4')">4 <span class="nb-sub">GHI</span></button>
+      <button class="nbtn" onclick="press('5')">5 <span class="nb-sub">JKL</span></button>
+      <button class="nbtn" onclick="press('6')">6 <span class="nb-sub">MNO</span></button>
+      <button class="nbtn" onclick="press('7')">7 <span class="nb-sub">PQRS</span></button>
+      <button class="nbtn" onclick="press('8')">8 <span class="nb-sub">TUV</span></button>
+      <button class="nbtn" onclick="press('9')">9 <span class="nb-sub">WXYZ</span></button>
+      <button class="nbtn special"><i class="ph ph-fingerprint"></i></button>
+      <button class="nbtn" onclick="press('0')">0</button>
+      <button class="nbtn special" onclick="del()"><i class="ph ph-backspace"></i></button>
+    </div>
+
+    <div class="pin-hint">PIN di test: 1 2 3 4 5 6</div>
+  </div>
+
+  <script>
+    let pin = [];
+    const correctPin = '123456';
+    const dots = document.querySelectorAll('.dot');
+
+    function updateDots() {
+      dots.forEach((dot, index) => {
+        if (index < pin.length) {
+          dot.className = 'dot filled';
+        } else {
+          dot.className = 'dot';
+        }
+      });
+    }
+
+    function press(num) {
+      if (pin.length < 6) {
+        pin.push(num);
+        updateDots();
+        if (pin.length === 6) {
+          setTimeout(checkPin, 150);
+        }
+      }
+    }
+
+    function del() {
+      if (pin.length > 0) {
+        pin.pop();
+        updateDots();
+      }
+    }
+
+    function checkPin() {
+      const entered = pin.join('');
+      if (entered === correctPin) {
+        dots.forEach(d => d.className = 'dot success');
+        setTimeout(() => {
+          document.getElementById('successOverlay').classList.add('show');
+          setTimeout(() => {
+            window.location.href = 'launcher.html';
+          }, 1500);
+        }, 300);
+      } else {
+        dots.forEach(d => d.className = 'dot error');
+        setTimeout(() => {
+          pin = [];
+          updateDots();
+        }, 500);
+      }
+    }
+
+    // Supporto tastiera
+    document.addEventListener('keydown', e => {
+      if (e.key >= '0' && e.key <= '9') press(e.key);
+      else if (e.key === 'Backspace') del();
+    });
+  </script>
+
+</body>
+</html>

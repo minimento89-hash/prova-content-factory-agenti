@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Content Factory V10 — Roadmap Reale</title>
+  
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <link rel="stylesheet" href="styles.css">
+  
+  <style>
+    /* ROADMAP SPECIFIC STYLES OVERRIDING/EXTENDING V10 */
+    .rm-container { max-width: 1200px; margin: 0 auto; padding: 40px; }
+
+    .rm-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 40px; }
+    .back-btn { 
+      display: flex; align-items: center; gap: 8px; padding: 10px 16px; 
+      background: var(--bg-surface); border: 1px solid var(--border-light); 
+      border-radius: var(--radius-md); font-weight: 600; cursor: pointer; text-decoration: none; color: var(--text-main);
+      transition: all 0.2s; box-shadow: var(--shadow-glass);
+    }
+    .back-btn:hover { background: var(--bg-surface-hover); transform: translateX(-4px); border-color: var(--accent-primary); }
+    
+    .rm-title-area { text-align: right; }
+    .rm-title { font-family: var(--font-serif); font-size: 34px; line-height: 1; letter-spacing: -0.02em;}
+    .rm-subtitle { font-family: monospace; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 6px;}
+
+    /* LEGENDA - Piu compatta */
+    .legend {
+      background: var(--bg-surface); padding: 12px 16px; border-radius: var(--radius-lg);
+      border: 1px solid var(--border-light); display: flex; flex-wrap: wrap; gap: 16px;
+      margin-bottom: 30px; box-shadow: var(--shadow-glass); justify-content: center;
+    }
+    .leg-item { display: flex; align-items: center; gap: 10px; }
+    .leg-dot { width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; position: relative; }
+    .leg-info { display: flex; flex-direction: column; line-height: 1.2; }
+    .leg-name { font-size: 11px; font-weight: 700; color: var(--text-main); text-transform: uppercase; }
+
+    /* GRID COMPATTA */
+    .roadmap-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+    
+    .rm-card {
+      background: var(--bg-surface); border-radius: var(--radius-lg); padding: 16px;
+      border: 1px solid var(--border-light); box-shadow: var(--shadow-glass);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer; position: relative;
+      overflow: hidden; min-height: 160px; display: flex; flex-direction: column;
+    }
+    .rm-card:hover { transform: translateY(-4px); border-color: rgba(139, 92, 246, 0.4); box-shadow: var(--shadow-hover); }
+
+    .rm-card.expanded {
+      position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(1) !important;
+      width: 90%; max-width: 600px; height: auto; max-height: 85vh; z-index: 1001; cursor: default;
+      box-shadow: 0 40px 80px rgba(15, 23, 42, 0.2); border-color: var(--accent-primary);
+      overflow-y: auto; background: var(--bg-surface); padding: 24px;
+      animation: modalIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    .roadmap-overlay {
+      position: fixed; inset: 0; background: rgba(248, 250, 252, 0.85);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+    }
+    .roadmap-overlay.active { opacity: 1; pointer-events: all; }
+    
+    @keyframes modalIn {
+      from { opacity: 0; transform: translate(-50%, -45%) scale(0.95); }
+      to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
+
+    .card-hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .card-icon { font-size: 20px; color: var(--accent-primary); padding: 8px; background: var(--accent-light); border-radius: var(--radius-sm); display:flex; align-items:center; justify-content:center;}
+    .card-status-indicator { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; position: relative; }
+
+    .card-title { font-family: var(--font-serif); font-size: 20px; margin-bottom: 6px; color: var(--text-main); line-height: 1.1;}
+    .card-desc { font-size: 11px; color: var(--text-muted); line-height: 1.4; margin-bottom: 14px; }
+
+    .card-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid var(--border-light); margin-top: auto; }
+    .tag { font-family: monospace; font-size: 10px; padding: 4px 8px; border-radius: 12px; background: var(--bg-core); color: var(--text-muted); border: 1px solid var(--border-light); font-weight: 700; letter-spacing: 0.05em;}
+    .progress-val { font-weight: 800; font-size: 12px; }
+
+    /* TASK LIST (Hidden by default) */
+    .task-list { display: none; flex-direction: column; gap: 10px; margin: 16px 0; padding: 16px; background: var(--bg-core); border-radius: var(--radius-md); border: 1px solid var(--border-light);}
+    .rm-card.expanded .task-list { display: flex; }
+    .task-item { display: flex; align-items: center; gap: 12px; font-size: 13px; font-weight: 500; color: var(--text-main); }
+    .task-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; border: 2px solid transparent;}
+    .task-dot.done { background: var(--accent-success); box-shadow: 0 0 10px rgba(16,185,129,0.4); border-color: white;}
+    .task-dot.todo { background: transparent; border-color: #cbd5e1; }
+    .task-text { flex: 1; }
+    .task-text a { color: var(--accent-primary); text-decoration: none; }
+    .task-text a:hover { text-decoration: underline; }
+
+    /* EXPANDED CONTROLS */
+    .close-btn { display: none; position: absolute; top: 16px; right: 16px; padding: 6px 12px; border-radius: var(--radius-sm); background: var(--text-main); color: #fff; font-size: 10px; font-weight: 700; cursor: pointer; transition: background 0.2s;}
+    .close-btn:hover { background: var(--accent-primary); }
+    .rm-card.expanded .close-btn { display: block; }
+    .rm-card.expanded .card-status-indicator { display: none; }
+    .rm-card.expanded .card-title { font-size: 26px; }
+    .rm-card.expanded .card-desc { font-size: 13px; }
+
+    /* PROFILE-STYLE ANIMATIONS (Ported & Polished) */
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.3; } 100% { transform: scale(1); opacity: 1; } }
+    @keyframes pulse-intense { 0% { opacity: 0.3; transform: scale(0.85); } 100% { opacity: 1; transform: scale(1.1); } }
+    
+    .p-green-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent-success); position: absolute; z-index: 2; }
+    .p-green-pulse { width: 10px; height: 10px; border-radius: 50%; background: var(--accent-success); position: absolute; z-index: 1; animation: pulse 2s infinite ease-out; }
+    
+    .p-dots { display: flex; gap: 3px; }
+    .p-dot-unit { width: 4px; height: 4px; border-radius: 50%; background: #3b82f6; animation: pulse 1.5s infinite; }
+    .p-dot-unit:nth-child(2) { animation-delay: 0.2s; }
+    .p-dot-unit:nth-child(3) { animation-delay: 0.4s; }
+
+    .p-gear { 
+      width: 14px; height: 14px; 
+      background: conic-gradient(from 0deg, currentColor 0deg 30deg, transparent 30deg 60deg, currentColor 60deg 90deg, transparent 90deg 120deg, currentColor 120deg 150deg, transparent 150deg 180deg, currentColor 180deg 210deg, transparent 210deg 240deg, currentColor 240deg 270deg, transparent 270deg 300deg, currentColor 300deg 330deg, transparent 330deg 360deg);
+      border-radius: 50%; position: relative; animation: spin 4s infinite linear; 
+    }
+    .p-gear::after { content:''; position:absolute; inset:3px; background: var(--bg-surface); border-radius:50%; }
+    .p-blue { color: #3b82f6; }
+    .p-purple { color: var(--accent-primary); width:16px; height:16px; animation-duration: 6s; }
+    .p-purple::after { inset:4px; }
+    .p-red { width: 12px; height: 12px; background: #ef4444; border-radius: 3px; animation: pulse-intense 0.7s infinite alternate; box-shadow: 0 0 12px rgba(239, 68, 68, 0.4); }
+    .p-cyan { width: 10px; height: 10px; border-radius: 50%; background: #06b6d4; box-shadow: 0 0 10px rgba(6,182,212,0.5); }
+    .p-grey { width: 12px; height: 12px; color: var(--text-muted); border: 2px dashed currentColor; border-radius: 50%; animation: spin 8s infinite linear; }
+  </style>
+</head>
+<body>
+
+<div class="roadmap-overlay" id="roadmapOverlay" onclick="closeAllCards()"></div>
+
+<div class="rm-container">
+  
+  <header class="rm-header">
+    <a href="launcher.html" class="back-btn"><i class="ph ph-arrow-left"></i> Torna</a>
+    <div class="rm-title-area">
+      <h1 class="rm-title">La Vera Roadmap V10</h1>
+      <p class="rm-subtitle">Piano d'azione reale & step sequenziali</p>
+    </div>
+  </header>
+
+  <!-- LEGENDA COMPATTA -->
+  <section class="legend">
+    <div class="leg-item"><div class="leg-dot"><div class="p-green-dot"></div></div><div class="leg-info"><span class="leg-name">Finito</span></div></div>
+    <div class="leg-item"><div class="leg-dot"><div class="p-dots"><div class="p-dot-unit"></div><div class="p-dot-unit"></div><div class="p-dot-unit"></div></div></div><div class="leg-info"><span class="leg-name">In Corso</span></div></div>
+    <div class="leg-item"><div class="leg-dot"><div class="p-grey"></div></div><div class="leg-info"><span class="leg-name">Pianificato</span></div></div>
+    <div class="leg-item"><div class="leg-dot"><div class="p-gear p-purple"></div></div><div class="leg-info"><span class="leg-name">Sogno Futuro</span></div></div>
+    <div class="leg-item"><div class="leg-dot"><div class="p-red"></div></div><div class="leg-info"><span class="leg-name">Attenzione</span></div></div>
+  </section>
+
+  <!-- GRID COMPATTO ROADMAP - ORDINATO CRONOLOGICAMENTE -->
+  <div class="roadmap-grid">
+    
+    <!-- FASE 1: SHELL -->
+    <div class="rm-card" onclick="toggleCard(this)" style="border-color: rgba(16, 185, 129, 0.4);">
+      <div class="close-btn">Chiudi</div>
+      <div class="card-hdr">
+        <div class="card-icon" style="color: #10b981; background: #d1fae5;"><i class="ph ph-paint-brush-broad"></i></div>
+        <div class="card-status-indicator"><div class="p-green-dot"></div><div class="p-green-pulse"></div></div>
+      </div>
+      <h2 class="card-title">1. UI & Estetica Shell</h2>
+      <p class="card-desc">Nuovo design Glassmorphism e schermate di partenza.</p>
+      <div class="task-list">
+        <div class="task-item"><div class="task-dot done"></div><div class="task-text">Ricostruzione Login V10 (PIN)</div></div>
+        <div class="task-item"><div class="task-dot done"></div><div class="task-text">Launcher Meta-App (Drag & Drop)</div></div>
+        <div class="task-item"><div class="task-dot done"></div><div class="task-text">Global Styles: Premium Bright</div></div>
+      </div>
+      <div class="card-footer">
+        <span class="tag">DESIGN</span>
+        <span class="progress-val" style="color:var(--accent-success)">100%</span>
+      </div>
+    </div>
+
+    <!-- FASE 2: WIZARD AI -->
+    <div class="rm-card" onclick="toggleCard(this)" style="border-color: rgba(16, 185, 129, 0.4);">
+      <div class="close-btn">Chiudi</div>
+      <div class="card-hdr">
+        <div class="card-icon" style="color: #10b981; background: #d1fae5;"><i class="ph ph-magic-wand"></i></div>
+        <div class="card-status-indicator"><div class="p-green-dot"></div><div class="p-green-pulse"></div></div>
+      </div>
+      <h2 class="card-title">2. Wizard Conversazionale</h2>
+      <p class="card-desc">Popup AI per la generazione automatizzata del "Nuovo Studio".</p>
+      <div class="task-list">
+        <div class="task-item"><div class="task-dot done"></div><div class="task-text">Interfaccia Chat "Il Capo"</div></div>
+        <div class="task-item"><div class="task-dot done"></div><div class="task-text">Logica Selezione 12 Layout</div></div>
+        <div class="task-item"><div class="task-dot done"></div><div class="task-text">Integrazione Gemini Prompt V10</div></div>
+      </div>
+      <div class="card-footer">
+        <span class="tag">COMPLETATO</span>
+        <span class="progress-val" style="color:var(--accent-success)">100%</span>
+      </div>
+    </div>
+
+    <!-- FASE 3: CORE STUDIO ARCHITECTURE -->
+    <div class="rm-card" onclick="toggleCard(this)" style="border-color: rgba(16, 185, 129, 0.4);">
+      <div class="close-btn">Chiudi</div>
+      <div class="card-hdr">
+        <div class="card-icon" style="color: #10b981; background: #d1fae5;"><i class="ph ph-squares-four"></i></div>
+        <div class="card-status-indicator"><div class="p-green-dot"></div><div class="p-green-pulse"></div></div>
+      </div>
+      <h2 class="card-title">3. Layout a Griglia Modulare</h2>
+      <p class="card-desc">L'interno dello Studio vero e proprio, riordinabile.</p>
+      <div class="task-list">
+        <div class="task-item"><div class="task-dot done"></div><div class="task-text">Creazione Template Dashboard Studio</div></div>
+        <div class="task-item"><div class="task-dot done"></div><div class="task-text">Drag & Drop Widget Interni</div></div>
+        <div class="task-item"><div class="task-dot done"></div><div class="task-text">Sidebar Dinamica Contestuale</div></div>
+      </div>
+      <div class="card-footer">
+        <span class="tag">COMPLETATO</span>
+        <span class="progress-val" style="color:var(--accent-success)">100%</span>
+      </div>
+    </div>
+
+    <!-- FASE 4: FIREBASE -->
+    <div class="rm-card" onclick="toggleCard(this)" style="border-color: rgba(59, 130, 246, 0.4);">
+      <div class="close-btn">Chiudi</div>
+      <div class="card-hdr">
+        <div class="card-icon" style="color: #3b82f6; background: #dbeafe;"><i class="ph ph-database"></i></div>
+        <div class="card-status-indicator"><div class="p-dots"><div class="p-dot-unit"></div><div class="p-dot-unit"></div><div class="p-dot-unit"></div></div></div>
+      </div>
+      <h2 class="card-title">4. Migrazione Firebase Core</h2>
+      <p class="card-desc">Spostare la logica V9 per salvare il Layout degli Studi nel Cloud.</p>
+      <div class="task-list">
+        <div class="task-item"><div class="task-dot todo"></div><div class="task-text">Collegamento Realtime Database</div></div>
+        <div class="task-item"><div class="task-dot todo"></div><div class="task-text">Salvataggio struttura JSON (Card Dragged)</div></div>
+        <div class="task-item"><div class="task-dot todo"></div><div class="task-text">Recupero profilo utente remoto</div></div>
+      </div>
+      <div class="card-footer">
+        <span class="tag">IN CORSO</span>
+        <span class="progress-val" style="color:#3b82f6;">In Corso (10%)</span>
+      </div>
+    </div>
+
+    <!-- FASE 5: GEMINI ENGINE -->
+    <div class="rm-card" onclick="toggleCard(this)">
+      <div class="close-btn">Chiudi</div>
+      <div class="card-hdr">
+        <div class="card-icon" style="color: #ec4899; background: #fce7f3;"><i class="ph ph-brain"></i></div>
+        <div class="card-status-indicator"><div class="p-grey"></div></div>
+      </div>
+      <h2 class="card-title">5. Gemini Intelligence Core</h2>
+      <p class="card-desc">Migrazione della Chat Multi-Agente e cervello del Chief.</p>
+      <div class="task-list">
+        <div class="task-item"><div class="task-dot todo"></div><div class="task-text">Ripristino Chat Box Locale</div></div>
+        <div class="task-item"><div class="task-dot todo"></div><div class="task-text">Comportamento "Chief Editor" Approvals</div></div>
+      </div>
+      <div class="card-footer">
+        <span class="tag">AI ENGINE</span>
+        <span class="progress-val" style="color:var(--text-muted)">0%</span>
+      </div>
+    </div>
+
+    <!-- FASE 6: MEDIA FACTORY SUITE -->
+    <div class="rm-card" onclick="toggleCard(this)">
+      <div class="close-btn">Chiudi</div>
+      <div class="card-hdr">
+        <div class="card-icon" style="color: #8b5cf6; background: #ede9fe;"><i class="ph ph-sliders"></i></div>
+        <div class="card-status-indicator"><div class="p-grey"></div></div>
+      </div>
+      <h2 class="card-title">6. Media Factory & Mixer</h2>
+      <p class="card-desc">Ripristino del Mixer Audio visivo (Orchestra AI).</p>
+      <div class="task-list">
+        <div class="task-item"><div class="task-dot todo"></div><div class="task-text">Interfaccia Slider Glass V10</div></div>
+        <div class="task-item"><div class="task-dot todo"></div><div class="task-text">Connessione a `flow-engine` locale</div></div>
+      </div>
+      <div class="card-footer">
+        <span class="tag">MEDIA</span>
+        <span class="progress-val" style="color:var(--text-muted)">0%</span>
+      </div>
+    </div>
+
+    <!-- FASE 7: SOCIAL APPROVAL LOOP -->
+    <div class="rm-card" onclick="toggleCard(this)">
+      <div class="close-btn">Chiudi</div>
+      <div class="card-hdr">
+        <div class="card-icon" style="color: #0ea5e9; background: #cffafe;"><i class="ph ph-share-network"></i></div>
+        <div class="card-status-indicator"><div class="p-grey"></div></div>
+      </div>
+      <h2 class="card-title">7. Social Approval Logic</h2>
+      <p class="card-desc">Reintegro della pipeline simulata di pubblicazione.</p>
+      <div class="task-list">
+        <div class="task-item"><div class="task-dot todo"></div><div class="task-text">Timeline Pubblicazione (Tiktok, IG)</div></div>
+        <div class="task-item"><div class="task-dot todo"></div><div class="task-text">Incremento "Hype Score" Automatico</div></div>
+      </div>
+      <div class="card-footer">
+        <span class="tag">DISTRIBUZIONE</span>
+        <span class="progress-val" style="color:var(--text-muted)">0%</span>
+      </div>
+    </div>
+
+    <!-- FASE 8: L'OFFICINA DELLE IDEE -->
+    <div class="rm-card" onclick="toggleCard(this)">
+      <div class="close-btn">Chiudi</div>
+      <div class="card-hdr">
+        <div class="card-icon" style="color: #10b981; background: #d1fae5;"><i class="ph ph-flask"></i></div>
+        <div class="card-status-indicator"><div class="p-grey"></div></div>
+      </div>
+      <h2 class="card-title">8. L'Officina delle Idee</h2>
+      <p class="card-desc">Brainstorming multithread per contenuti.</p>
+      <div class="task-list">
+        <div class="task-item"><div class="task-dot todo"></div><div class="task-text">Modale "Brainstorming" UI</div></div>
+        <div class="task-item"><div class="task-dot todo"></div><div class="task-text">Generazione Piano Editoriale PDF</div></div>
+      </div>
+      <div class="card-footer">
+        <span class="tag">IDEAS</span>
+        <span class="progress-val" style="color:var(--text-muted)">0%</span>
+      </div>
+    </div>
+
+    <!-- FASE 9: LOGIC FLOWS -->
+    <div class="rm-card" onclick="toggleCard(this)">
+      <div class="close-btn">Chiudi</div>
+      <div class="card-hdr">
+        <div class="card-icon" style="color: #64748b; background: #f1f5f9;"><i class="ph ph-graph"></i></div>
+        <div class="card-status-indicator"><div class="p-grey"></div></div>
+      </div>
+      <h2 class="card-title">9. Logic Flows Studio</h2>
+      <p class="card-desc">Editor a nodi visuale per le Automazioni.</p>
+      <div class="task-list">
+        <div class="task-item"><div class="task-dot todo"></div><div class="task-text">Motore Canvas a Nodi</div></div>
+        <div class="task-item"><div class="task-dot todo"></div><div class="task-text">Collegamento Dati tra Agenti</div></div>
+      </div>
+      <div class="card-footer">
+        <span class="tag">INFRASTRUTTURA</span>
+        <span class="progress-val" style="color:var(--text-muted)">0%</span>
+      </div>
+    </div>
+
+    <!-- FASE 10: SENTIMENT -->
+    <div class="rm-card" onclick="toggleCard(this)">
+      <div class="close-btn">Chiudi</div>
+      <div class="card-hdr">
+        <div class="card-icon" style="color: #ef4444; background: #fef2f2;"><i class="ph ph-heart"></i></div>
+        <div class="card-status-indicator"><div class="p-grey"></div></div>
+      </div>
+      <h2 class="card-title">10. Sentiment Evolution</h2>
+      <p class="card-desc">Analisi emotiva e crescita fan.</p>
+      <div class="task-list">
+        <div class="task-item"><div class="task-dot todo"></div><div class="task-text">Widget Grafico Sentiment V10</div></div>
+        <div class="task-item"><div class="task-dot todo"></div><div class="task-text">Mappatura feedback Social Loop</div></div>
+      </div>
+      <div class="card-footer">
+        <span class="tag">SOCIAL</span>
+        <span class="progress-val" style="color:var(--text-muted)">0%</span>
+      </div>
+    </div>
+
+    <!-- FASE 11: LIVE ANALYTICS SVG -->
+    <div class="rm-card" onclick="toggleCard(this)">
+      <div class="close-btn">Chiudi</div>
+      <div class="card-hdr">
+        <div class="card-icon" style="color: #f59e0b; background: #fef3c7;"><i class="ph ph-chart-bar"></i></div>
+        <div class="card-status-indicator"><div class="p-grey"></div></div>
+      </div>
+      <h2 class="card-title">11. Live Analytics Dashboard</h2>
+      <p class="card-desc">Porting dei grafici da V9 a V10.</p>
+      <div class="task-list">
+        <div class="task-item"><div class="task-dot todo"></div><div class="task-text">Refresh Dati in tempo reale</div></div>
+        <div class="task-item"><div class="task-dot todo"></div><div class="task-text">Visualizzazioni ad Area (SVG)</div></div>
+      </div>
+      <div class="card-footer">
+        <span class="tag">DATA</span>
+        <span class="progress-val" style="color:var(--text-muted)">0%</span>
+      </div>
+    </div>
+
+
+
+    <!-- FASE 12: GUIDE RAPIDE -->
+    <div class="rm-card" onclick="toggleCard(this)">
+      <div class="close-btn">Chiudi</div>
+      <div class="card-hdr">
+        <div class="card-icon" style="color: #6366f1; background: #e0e7ff;"><i class="ph ph-books"></i></div>
+        <div class="card-status-indicator"><div class="p-grey"></div></div>
+      </div>
+      <h2 class="card-title">12. Guide Rapide & Tips</h2>
+      <p class="card-desc">Centro d'apprendimento incapsulato nel Launcher.</p>
+      <div class="task-list">
+        <div class="task-item"><div class="task-dot todo"></div><div class="task-text">Modale "Primi Passi" integrata</div></div>
+        <div class="task-item"><div class="task-dot todo"></div><div class="task-text">Documentazione interna al volo</div></div>
+      </div>
+      <div class="card-footer">
+        <span class="tag">DOCS</span>
+        <span class="progress-val" style="color:var(--text-muted)">0%</span>
+      </div>
+    </div>
+
+    <!-- FASE 13: THE NEXUS -->
+    <div class="rm-card" onclick="toggleCard(this)">
+      <div class="close-btn">Chiudi</div>
+      <div class="card-hdr">
+        <div class="card-icon" style="color: #8b5cf6; background: #ede9fe;"><i class="ph ph-planet"></i></div>
+        <div class="card-status-indicator"><div class="p-grey"></div></div>
+      </div>
+      <h2 class="card-title">13. The Nexus Distribuzioni</h2>
+      <p class="card-desc">Hub inter-studio per condividere asset.</p>
+      <div class="task-list">
+        <div class="task-item"><div class="task-dot todo"></div><div class="task-text">Cartella condivisa Multi-Studio V10</div></div>
+      </div>
+      <div class="card-footer">
+        <span class="tag">META</span>
+        <span class="progress-val" style="color:var(--text-muted)">0%</span>
+      </div>
+    </div>
+
+    <!-- RESOURCES -->
+    <div class="rm-card" onclick="toggleCard(this)">
+      <div class="close-btn">Chiudi</div>
+      <div class="card-hdr">
+        <div class="card-icon" style="color: #64748b; background: #f1f5f9;"><i class="ph ph-lightning"></i></div>
+        <div class="card-status-indicator"><div class="p-cyan"></div></div>
+      </div>
+      <h2 class="card-title">A. AI Tools & Resources</h2>
+      <p class="card-desc">Lista stabile di links utili nel V10.</p>
+      <div class="task-list">
+        <div class="task-item"><div class="task-dot todo"></div><div class="task-text"><a href="https://suno.com/" target="_blank">Suno.com (Music)</a></div></div>
+        <div class="task-item"><div class="task-dot todo"></div><div class="task-text"><a href="https://www.goenhance.ai/video-models/luma" target="_blank">GoEnhance Luma (Video)</a></div></div>
+      </div>
+      <div class="card-footer">
+        <span class="tag">LINKS</span>
+        <span class="progress-val" style="color:#06b6d4;">Permanente</span>
+      </div>
+    </div>
+
+    <!-- FUTURE 1 -->
+    <div class="rm-card" onclick="toggleCard(this)">
+      <div class="close-btn">Chiudi</div>
+      <div class="card-hdr">
+        <div class="card-icon" style="color: var(--accent-primary); background: var(--accent-light);"><i class="ph ph-crystal-ball"></i></div>
+        <div class="card-status-indicator"><div class="p-gear p-purple"></div></div>
+      </div>
+      <h2 class="card-title">B. Aggiornamenti Futuri</h2>
+      <p class="card-desc">Sogni d'espansione del V10.</p>
+      <div class="task-list">
+        <div class="task-item"><div class="task-dot todo"></div><div class="task-text">Social Ads Agent Integrato</div></div>
+        <div class="task-item"><div class="task-dot todo"></div><div class="task-text">Doppiaggio Video Multilingua API</div></div>
+      </div>
+      <div class="card-footer">
+        <span class="tag">EVOLUZIONE</span>
+        <span class="progress-val" style="color:var(--accent-primary)">Sogno</span>
+      </div>
+    </div>
+
+    <!-- INFO 1 -->
+    <div class="rm-card" onclick="toggleCard(this)">
+      <div class="close-btn">Chiudi</div>
+      <div class="card-hdr">
+        <div class="card-icon" style="color: #06b6d4; background: #cffafe;"><i class="ph ph-info"></i></div>
+        <div class="card-status-indicator"><div class="p-cyan"></div></div>
+      </div>
+      <h2 class="card-title">C. Curiosità di Versione</h2>
+      <p class="card-desc">La V10 è la più pulita di sempre.</p>
+      <div class="task-list">
+        <div class="task-item"><div class="task-dot done"></div><div class="task-text">Vanilla JS Puro (Zero React)</div></div>
+        <div class="task-item"><div class="task-dot done"></div><div class="task-text">Phosphor Icons per Leggerezza</div></div>
+      </div>
+      <div class="card-footer">
+        <span class="tag">INFO</span>
+        <span class="progress-val" style="color:#06b6d4">News</span>
+      </div>
+    </div>
+
+    <!-- ISSUE 1 -->
+    <div class="rm-card" onclick="toggleCard(this)" style="border-color: rgba(239, 68, 68, 0.4);">
+      <div class="close-btn">Chiudi</div>
+      <div class="card-hdr">
+        <div class="card-icon" style="color: #ef4444; background: #fef2f2;"><i class="ph ph-warning-circle"></i></div>
+        <div class="card-status-indicator"><div class="p-red"></div></div>
+      </div>
+      <h2 class="card-title">D. Criticità Segnalate</h2>
+      <p class="card-desc">Attivare la vecchia logica V9 su nuova UI richiede pazienza estrema.</p>
+      <div class="task-list">
+        <div class="task-item"><div class="task-dot done"></div><div class="task-text">Estirpato Dark Mode / Meteo</div></div>
+        <div class="task-item"><div class="task-dot todo"></div><div class="task-text">Conflitto classi CSS inter-fase</div></div>
+      </div>
+      <div class="card-footer">
+        <span class="tag">BUG DEPOT</span>
+        <span class="progress-val" style="color:#ef4444">In Corso (60%)</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function toggleCard(card) {
+  if (card.classList.contains('expanded')) {
+    closeAllCards();
+    return;
+  }
+  closeAllCards();
+  card.classList.add('expanded');
+  document.getElementById('roadmapOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden'; 
+}
+
+function closeAllCards() {
+  document.querySelectorAll('.rm-card').forEach(c => c.classList.remove('expanded'));
+  document.getElementById('roadmapOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+</script>
+
+</body>
+</html>

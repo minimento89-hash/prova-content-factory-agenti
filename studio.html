@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Content Factory V10 — Dashboard Studio</title>
+  
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+  
+  <style>
+    /* LAYOUT STUDIO V10 (Sidebar + Plancia) */
+    body { background: var(--bg-core); display: flex; height: 100vh; overflow: hidden; margin: 0; }
+    
+    /* SIDEBAR */
+    .studio-sidebar {
+      width: 260px; background: var(--bg-surface); border-right: 1px solid var(--border-light);
+      display: flex; flex-direction: column; padding: 24px; flex-shrink: 0; box-shadow: 4px 0 24px rgba(15,23,42,0.02);
+    }
+    .brand-area { display: flex; align-items: center; gap: 12px; margin-bottom: 40px; }
+    .b-icon { width: 36px; height: 36px; background: linear-gradient(135deg, var(--accent-primary), #db2777); color: white; border-radius: 10px; display:flex; align-items:center; justify-content:center; font-size: 20px;}
+    .b-text { font-family: var(--font-serif); font-size: 24px; color: var(--text-main); }
+    
+    .nav-label { font-family: monospace; font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin: 24px 0 12px 12px; }
+    
+    .nav-item {
+      display: flex; align-items: center; gap: 14px; padding: 12px; border-radius: var(--radius-md);
+      color: var(--text-muted); text-decoration: none; font-weight: 500; font-size: 14px; transition: all 0.2s; cursor: pointer;
+    }
+    .nav-item:hover { background: var(--bg-core); color: var(--text-main); transform: translateX(4px); }
+    .nav-item.active { background: var(--accent-light); color: var(--accent-primary); font-weight: 600; }
+    .n-icon { font-size: 18px; }
+
+    .user-footer { margin-top: auto; display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: var(--radius-md); background: var(--bg-core); border: 1px solid var(--border-light); cursor: pointer; transition: border-color 0.2s;}
+    .user-footer:hover { border-color: var(--accent-primary); }
+    .uf-av { font-size: 20px; }
+    .uf-info { display: flex; flex-direction: column; }
+    .uf-name { font-size: 13px; font-weight: 700; color: var(--text-main); }
+    .uf-role { font-size: 10px; color: var(--text-muted); }
+
+    /* MAIN STAGE */
+    .studio-main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; position: relative;}
+    
+    /* TOP HEADER (Interno Studio) */
+    .s-header { padding: 30px 40px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: rgba(248, 250, 252, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: 100; border-bottom: 1px solid var(--border-light);}
+    .s-title { font-family: var(--font-serif); font-size: 32px; color: var(--text-main); letter-spacing: -0.01em;}
+    .s-actions { display: flex; gap: 12px; }
+    .s-btn-icon { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border-light); background: var(--bg-surface); color: var(--text-main); display:flex; align-items:center; justify-content:center; font-size: 18px; transition: all 0.2s; cursor: pointer; box-shadow: var(--shadow-glass);}
+    .s-btn-icon:hover { color: var(--accent-primary); border-color: var(--accent-primary); transform: translateY(-2px); }
+
+    /* GRID DRAG & DROP DASHBOARD */
+    .dashboard-grid { padding: 0 40px 40px 40px; display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px; }
+    
+    .widget-box {
+      background: var(--bg-surface); border-radius: var(--radius-xl); border: 1px solid var(--border-light);
+      box-shadow: var(--shadow-glass); padding: 24px; position: relative; display: flex; flex-direction: column;
+      transition: box-shadow 0.3s, transform 0.3s;
+    }
+    .widget-box:hover { box-shadow: var(--shadow-hover); }
+    
+    /* SortableJS Grab Handle Overlay */
+    .drag-bar { position: absolute; top: 0; left: 0; right: 0; height: 20px; cursor: grab; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; border-top-left-radius: var(--radius-xl); border-top-right-radius: var(--radius-xl); background: linear-gradient(to bottom, rgba(139,92,246,0.1), transparent);}
+    .widget-box:hover .drag-bar { opacity: 1; }
+    .drag-bar i { font-size: 16px; color: var(--accent-primary); opacity: 0.7;}
+    
+    /* Widget Sizes */
+    .w-col-3 { grid-column: span 3; }
+    .w-col-4 { grid-column: span 4; }
+    .w-col-6 { grid-column: span 6; }
+    .w-col-8 { grid-column: span 8; }
+    .w-col-12 { grid-column: span 12; }
+
+    /* WIDGET: KPIs */
+    .kpi-hdr { display: flex; justify-content: space-between; margin-bottom: 20px;}
+    .kpi-icon { width: 32px; height: 32px; border-radius: 8px; display:flex; align-items:center; justify-content:center; font-size: 16px; }
+    .kpi-badge { font-family: monospace; font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 12px; height: fit-content;}
+    .kpi-val { font-family: var(--font-serif); font-size: 42px; line-height: 1; margin-bottom: 8px; color: var(--text-main);}
+    .kpi-lbl { font-size: 12px; color: var(--text-muted); font-weight: 500;}
+
+    /* WIDGET: SQUADRA */
+    .sq-title { font-size: 16px; font-weight: 700; color: var(--text-main); margin-bottom: 20px; display: flex; align-items: center; gap: 8px;}
+    .agent-row { display: flex; align-items: center; justify-content: space-between; padding: 12px; border: 1px solid var(--border-light); border-radius: 16px; margin-bottom: 12px; transition: all 0.2s; cursor: pointer;}
+    .agent-row:hover { border-color: var(--accent-primary); background: var(--bg-core); transform: translateX(4px); }
+    .ar-lft { display: flex; align-items: center; gap: 14px; }
+    .ar-ic { width: 40px; height: 40px; border-radius: 10px; display:flex; align-items:center; justify-content:center; font-size: 20px;}
+    .ar-n { font-weight: 600; font-size: 14px; color: var(--text-main); margin-bottom: 2px;}
+    .ar-r { font-family: monospace; font-size: 10px; color: var(--text-muted); text-transform: uppercase;}
+    .ar-stat { font-family: monospace; font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 12px; display: flex; align-items: center; gap: 6px;}
+
+    /* WIDGET: CAPO REDATTORE (Dark / Gradient) */
+    .widget-dark { background: linear-gradient(135deg, #0f172a, #020617); color: white; border: none; overflow: hidden;}
+    .widget-dark .drag-bar { background: linear-gradient(to bottom, rgba(255,255,255,0.1), transparent); }
+    .wd-lbl { font-family: monospace; font-size: 9px; color: rgba(255,255,255,0.6); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px;}
+    .wd-title { font-family: var(--font-serif); font-size: 28px; line-height: 1.1; margin-bottom: 16px;}
+    .wd-desc { font-size: 12px; color: rgba(255,255,255,0.7); line-height: 1.5; margin-bottom: 24px;}
+    .wd-btn { background: linear-gradient(90deg, #d946ef, #8b5cf6); color: white; border: none; border-radius: 12px; padding: 14px 20px; font-size: 14px; font-weight: 600; cursor: pointer; transition: transform 0.2s; box-shadow: 0 10px 20px rgba(217, 70, 239, 0.3);}
+    .wd-btn:hover { transform: scale(1.02); }
+    
+    .sortable-ghost { opacity: 0.4; transform: scale(0.95); background: var(--accent-light); border: 2px dashed var(--accent-primary); }
+  </style>
+
+</head>
+<body>
+
+  <!-- SIDEBAR (Screen 2 Replica V10) -->
+  <aside class="studio-sidebar">
+    <div class="brand-area" onclick="window.location.href='launcher.html'" style="cursor: pointer; transition: all 0.2s;" title="← Torna al Launcher" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">
+      <div class="b-icon" style="transition: transform 0.2s;" onmouseover="this.style.transform='rotate(-10deg) scale(1.1)'" onmouseout="this.style.transform='none'"><i class="ph-fill ph-sparkle"></i></div>
+      <div class="b-text">Factory</div>
+    </div>
+    
+    <div class="nav-label">Studio</div>
+    <a href="#" class="nav-item active">
+      <i class="ph ph-squares-four n-icon"></i> Dashboard
+    </a>
+    <a href="#" class="nav-item" onclick="toggleSegretario()">
+      <i class="ph ph-calendar-check n-icon"></i> Segretario Globale
+    </a>
+    <a href="#" class="nav-item">
+      <i class="ph ph-pen-nib n-icon"></i> Creazione
+    </a>
+
+    <div class="nav-label">Infrastruttura</div>
+    <a href="#" class="nav-item">
+      <i class="ph ph-robot n-icon"></i> La Squadra AI
+    </a>
+    <a href="#" class="nav-item">
+      <i class="ph ph-sliders n-icon"></i> Mixer Orchestra
+    </a>
+    <a href="#" class="nav-item">
+      <i class="ph ph-shield-check n-icon"></i> Sicurezza
+    </a>
+
+    <!-- Spacer to push user profile down -->
+    <div style="flex:1;"></div>
+
+    <div class="user-footer" onclick="window.location.href='launcher.html'">
+      <div class="uf-av">🦁</div>
+      <div class="uf-info">
+        <div class="uf-name">Il Capo</div>
+        <div class="uf-role">Esci al Launcher <i class="ph ph-arrow-up-right"></i></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN STAGE (Screen 1 Replica V10) -->
+  <main class="studio-main">
+    
+    <header class="s-header">
+      <h1 class="s-title">Buongiorno.</h1>
+      <div class="s-actions">
+        <div class="s-btn-icon"><i class="ph ph-magnifying-glass"></i></div>
+        <div class="s-btn-icon"><i class="ph ph-bell"></i></div>
+        <div class="s-btn-icon"><i class="ph ph-gear-six"></i></div>
+      </div>
+    </header>
+
+    <!-- GRIGLIA DRAG & DROP -->
+    <div class="dashboard-grid" id="dashboardGrid">
+      
+      <!-- KPI 1 -->
+      <div class="widget-box w-col-4">
+        <div class="drag-bar"><i class="ph ph-dots-six"></i></div>
+        <div class="kpi-hdr">
+          <div class="kpi-icon" style="background:var(--bg-core); color:var(--accent-primary);"><i class="ph ph-trend-up"></i></div>
+          <div class="kpi-badge" style="background:#d1fae5; color:#10b981;">+12%</div>
+        </div>
+        <div class="kpi-val">842</div>
+        <div class="kpi-lbl">Hype Score Globale</div>
+      </div>
+
+      <!-- KPI 2 -->
+      <div class="widget-box w-col-4">
+        <div class="drag-bar"><i class="ph ph-dots-six"></i></div>
+        <div class="kpi-hdr">
+          <div class="kpi-icon" style="background:var(--bg-core); color:#0ea5e9;"><i class="ph ph-paper-plane-tilt"></i></div>
+        </div>
+        <div class="kpi-val">12</div>
+        <div class="kpi-lbl">Post Pronti per Oggi</div>
+      </div>
+
+      <!-- KPI 3 -->
+      <div class="widget-box w-col-4">
+        <div class="drag-bar"><i class="ph ph-dots-six"></i></div>
+        <div class="kpi-hdr">
+          <div class="kpi-icon" style="background:var(--bg-core); color:#ec4899;"><i class="ph ph-mask-happy"></i></div>
+          <div class="kpi-badge" style="background:#fce7f3; color:#db2777;">Live</div>
+        </div>
+        <div class="kpi-val">Positivo</div>
+        <div class="kpi-lbl">Sentiment del Pubblico</div>
+      </div>
+
+      <!-- SQUADRA AGENTI -->
+      <div class="widget-box w-col-8">
+        <div class="drag-bar"><i class="ph ph-dots-six"></i></div>
+        <h2 class="sq-title"><i class="ph ph-users-three" style="color:var(--accent-primary); font-size:24px;"></i> La Squadra Operativa</h2>
+        
+        <div class="agent-row">
+          <div class="ar-lft">
+            <div class="ar-ic" style="background:#ede9fe; color:#8b5cf6;"><i class="ph ph-code"></i></div>
+            <div>
+              <div class="ar-n">Antigravity</div>
+              <div class="ar-r">Orchestratore & Architetto JS</div>
+            </div>
+          </div>
+          <div class="ar-stat" style="background:#d1fae5; color:#10b981;"><div class="dot" style="width:6px;height:6px;border-radius:50%;background:#10b981;"></div> Online</div>
+        </div>
+
+        <div class="agent-row">
+          <div class="ar-lft">
+            <div class="ar-ic" style="background:#fce7f3; color:#ec4899;"><i class="ph ph-paint-brush"></i></div>
+            <div>
+              <div class="ar-n">Agente 2 (Designer)</div>
+              <div class="ar-r">Stesura CSS Premium & Animazioni</div>
+            </div>
+          </div>
+          <div class="ar-stat" style="background:#fce7f3; color:#db2777;"><div class="dot" style="width:6px;height:6px;border-radius:50%;background:#db2777;"></div> Fase 3 Attiva</div>
+        </div>
+
+        <div class="agent-row">
+          <div class="ar-lft">
+            <div class="ar-ic" style="background:#e0f2fe; color:#0ea5e9;"><i class="ph ph-bug"></i></div>
+            <div>
+              <div class="ar-n">Agente 3 (QA & Tester)</div>
+              <div class="ar-r">Stress Test e Simulazione</div>
+            </div>
+          </div>
+          <div class="ar-stat" style="background:var(--bg-core); color:var(--text-muted);"> In Attesa</div>
+        </div>
+
+      </div>
+
+      <!-- CAPO REDATTORE CALL TO ACTION -->
+      <div class="widget-box widget-dark w-col-4">
+        <div class="drag-bar"><i class="ph ph-dots-six" style="color:white;"></i></div>
+        <div style="position:absolute; top:-50%; right:-50%; width:200px; height:200px; background:radial-gradient(circle, rgba(139,92,246,0.3) 0%, transparent 70%); border-radius:50%; pointer-events:none;"></div>
+        
+        <div class="wd-lbl">Direzione Creativa</div>
+        <div class="wd-title">Il tavolo del Capo Redattore</div>
+        <div class="wd-desc">In attesa che l'Architetto ricolleghi i cavi. Il Chief non può ancora approvare niente finché i motori Firebase/Gemini non girano.</div>
+        
+        <button class="wd-btn"><i class="ph ph-rocket-launch"></i> Attendi Fase 4</button>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- SLIDER SEGRETARIO (Sincronizzazione Globale) -->
+  <style>
+    .segretario-overlay {
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4);
+      z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+      backdrop-filter: blur(4px);
+    }
+    .segretario-overlay.show { opacity: 1; pointer-events: all; }
+
+    .segretario-panel {
+      position: fixed; top: 0; bottom: 0; left: 260px; width: 400px;
+      background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px);
+      box-shadow: 20px 0 40px rgba(0,0,0,0.1); border-right: 1px solid var(--border-light);
+      z-index: 201; transform: translateX(-100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    .segretario-panel.show { transform: translateX(0); }
+
+    .sp-hdr { padding: 30px; border-bottom: 1px solid var(--border-light); display: flex; align-items: center; justify-content: space-between; background: white;}
+    .sph-title { display: flex; align-items: center; gap: 12px; }
+    .sph-icon { width: 44px; height: 44px; border-radius: 14px; background: linear-gradient(135deg, #3b82f6, #0ea5e9); color: white; display:flex; align-items:center; justify-content:center; font-size: 20px; box-shadow: 0 8px 16px rgba(59, 130, 246, 0.2);}
+    .sph-name { font-family: var(--font-serif); font-size: 24px; line-height: 1; margin-bottom: 4px; color: var(--text-main);}
+    .sph-role { font-family: monospace; font-size: 10px; color: #3b82f6; text-transform: uppercase; font-weight: 700; letter-spacing: 0.1em;}
+    .sph-close { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border-light); display:flex; align-items:center; justify-content:center; cursor: pointer; color: var(--text-muted); transition: all 0.2s; background: var(--bg-surface); }
+    .sph-close:hover { color: #ef4444; border-color: #ef4444; background: #fef2f2;}
+
+    .sp-body { flex: 1; padding: 30px; overflow-y: auto; background: var(--bg-core); }
+    
+    .sp-section-lbl { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 16px; margin-top: 24px; display: flex; align-items: center; justify-content: space-between;}
+    .sp-section-lbl:first-child { margin-top: 0; }
+    
+    .event-card { background: white; border-radius: 16px; padding: 16px; border: 1px solid var(--border-light); margin-bottom: 12px; display: flex; gap: 16px; box-shadow: var(--shadow-glass); transition: transform 0.2s;}
+    .event-card:hover { transform: translateY(-2px); border-color: #3b82f6;}
+    .ec-time { display: flex; flex-direction: column; align-items: center; padding-right: 16px; border-right: 1px solid var(--border-light); font-family: monospace; min-width: 60px;}
+    .ect-day { font-size: 20px; font-weight: 700; color: var(--text-main); }
+    .ect-mon { font-size: 10px; color: var(--accent-primary); text-transform: uppercase; font-weight: 700;}
+    
+    .ec-info { flex: 1; display:flex; flex-direction: column; justify-content: center;}
+    .eci-title { font-size: 14px; font-weight: 600; color: var(--text-main); margin-bottom: 4px; line-height: 1.2;}
+    .eci-studio { font-family: monospace; font-size: 9px; padding: 3px 8px; border-radius: 12px; background: var(--bg-core); border: 1px solid var(--border-light); color: var(--text-muted); width: fit-content; text-transform: uppercase;}
+    
+    .ec-actions { display: flex; flex-direction: column; gap: 8px; justify-content: center;}
+    .eca-btn { width: 32px; height: 32px; border-radius: 8px; border: none; font-size: 14px; display:flex; align-items:center; justify-content:center; cursor: pointer; transition: all 0.2s;}
+    .eca-ok { background: #d1fae5; color: #10b981; } .eca-ok:hover { background: #10b981; color: white;}
+    .eca-no { background: #fef2f2; color: #ef4444; } .eca-no:hover { background: #ef4444; color: white;}
+
+    /* Modifica customizzabile */
+    .sp-add-btn { width: 100%; padding: 14px; border: 2px dashed var(--border-light); background: transparent; border-radius: 16px; color: var(--text-muted); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;}
+    .sp-add-btn:hover { border-color: var(--accent-primary); color: var(--accent-primary); background: var(--accent-light);}
+  </style>
+
+  <div class="segretario-overlay" id="sgrOverlay" onclick="toggleSegretario()"></div>
+  <div class="segretario-panel" id="sgrPanel">
+    <div class="sp-hdr">
+      <div class="sph-title">
+        <div class="sph-icon"><i class="ph-fill ph-calendar-check"></i></div>
+        <div>
+          <div class="sph-name">Segretario Globale</div>
+          <div class="sph-role">Sincronizzazione Multi-Studio</div>
+        </div>
+      </div>
+      <button class="sph-close" onclick="toggleSegretario()"><i class="ph ph-x"></i></button>
+    </div>
+    
+    <div class="sp-body">
+      
+      <div class="sp-section-lbl">Richiedono tua Approvazione <span style="background:#fef2f2; color:#ef4444; padding:2px 6px; border-radius:8px; font-size:9px;">2 DA VERIFICARE</span></div>
+      
+      <div class="event-card">
+        <div class="ec-time"><div class="ect-day">Oggi</div><div class="ect-mon">18:00</div></div>
+        <div class="ec-info">
+          <div class="eci-title">Pubblicazione Reel "Mistero" su YouTube</div>
+          <div class="eci-studio">📽️ Da: Io, Scrittore</div>
+        </div>
+        <div class="ec-actions">
+          <button class="eca-btn eca-ok" title="Approva e pubblica"><i class="ph-bold ph-check"></i></button>
+          <button class="eca-btn eca-no" title="Respingi"><i class="ph-bold ph-x"></i></button>
+        </div>
+      </div>
+
+      <div class="sp-section-lbl">Agenda Globale Privata</div>
+      
+      <div class="event-card">
+        <div class="ec-time"><div class="ect-day">Gio</div><div class="ect-mon">10:00</div></div>
+        <div class="ec-info">
+          <div class="eci-title">Appuntamento Psicologo</div>
+          <div class="eci-studio">👤 Calendario Personale</div>
+        </div>
+      </div>
+
+      <div class="event-card">
+        <div class="ec-time"><div class="ect-day">Ven</div><div class="ect-mon">14:30</div></div>
+        <div class="ec-info">
+          <div class="eci-title">Rilascio Update App Mobile</div>
+          <div class="eci-studio">💻 Da: Io, Apps</div>
+        </div>
+      </div>
+
+      <button class="sp-add-btn" style="margin-top: 24px;"><i class="ph-bold ph-plus"></i> Personalizza Agenda (Aggiungi Evento Globale)</button>
+    </div>
+  </div>
+
+  <script>
+    // Sistema Grid Drag & Drop come richiesto
+    document.addEventListener("DOMContentLoaded", () => {
+        const grid = document.getElementById('dashboardGrid');
+        new Sortable(grid, {
+            animation: 350,
+            handle: '.drag-bar', 
+            ghostClass: 'sortable-ghost',
+            easing: "cubic-bezier(0.16, 1, 0.3, 1)"
+        });
+    });
+
+    // Funzione Segretario Slider
+    function toggleSegretario() {
+      const panel = document.getElementById('sgrPanel');
+      const overlay = document.getElementById('sgrOverlay');
+      if(panel.classList.contains('show')) {
+        panel.classList.remove('show');
+        overlay.classList.remove('show');
+      } else {
+        panel.classList.add('show');
+        overlay.classList.add('show');
+      }
+    }
+  </script>
+
+</body>
+</html>
