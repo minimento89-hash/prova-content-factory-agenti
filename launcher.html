@@ -30,7 +30,7 @@
           <div class="user-status"><div class="dot"></div> <span data-t="online">Online</span></div>
         </div>
       </div>
-      <button class="btn-esci"><i class="ph ph-sign-out"></i> <span data-t="logout">Esci</span></button>
+      <button class="btn-esci" onclick="window.location.href='login.html'"><i class="ph ph-sign-out"></i> <span data-t="logout">Esci</span></button>
     </div>
   </header>
 
@@ -228,7 +228,7 @@
     </div>
   </div>
 
-  <script>
+  <script type="module">
     /* ========================================================
        FASE 4: CLOUD DATABASE SIMULATION (LocalStorage)
        Salvataggio automatico JSON struttura studi
@@ -256,7 +256,7 @@
       setTimeout(() => document.getElementById('syncStatus').style.opacity = '0.5', 1000);
     }
 
-    function updateStudioTitle(id, el) {
+    window.updateStudioTitle = function(id, el) {
       const newTitle = el.innerText.trim();
       const st = dbStudi.find(s => s.id === id);
       if(st && newTitle !== "") {
@@ -267,7 +267,7 @@
       }
     }
 
-    function renderStudi() {
+    window.renderStudi = function() {
       const c = document.getElementById('studi-container');
       c.innerHTML = '';
       
@@ -288,7 +288,7 @@
             </div>
             <div class="studio-actions" style="position:relative; z-index:1;">
               <button class="btn-apri" onclick="window.location.href='studio.html?id=${s.id}'"><i class="ph ph-play"></i> Apri studio</button>
-              <button class="btn-del" onclick="deleteStudio('${s.id}')"><i class="ph ph-trash"></i></button>
+              <button class="btn-del" onclick="window.deleteStudio('${s.id}')"><i class="ph ph-trash"></i></button>
             </div>
           </div>
         `;
@@ -307,7 +307,7 @@
       document.getElementById('new-studio-slot').onclick = openWizardUI;
     }
 
-    function deleteStudio(id) {
+    window.deleteStudio = function(id) {
       if(confirm('🗑️ Vuoi davvero demolire questo studio?\nTutti gli agenti verranno scollegati.')) {
         dbStudi = dbStudi.filter(s => s.id !== id);
         saveDB();
@@ -382,7 +382,7 @@
     let userInputGoal = "";
     let userInputName = "";
 
-    function openWizardUI() {
+    window.openWizardUI = function() {
       wizOverlay.classList.add('show');
       if(step === 0) {
         step = 1;
@@ -394,7 +394,7 @@
       setTimeout(() => wizInput.focus(), 600);
     }
 
-    function closeWizard() {
+    window.closeWizard = function() {
       wizOverlay.classList.remove('show');
       setTimeout(() => { step = 0; document.querySelectorAll('.msg').forEach(el => el.remove()); layoutCol.classList.remove('active'); wizInput.value = ''; }, 400);
     }
@@ -407,7 +407,7 @@
       chatMsgs.scrollTop = chatMsgs.scrollHeight;
     }
 
-    function sendWizMsg() {
+    window.sendWizMsg = function() {
       const v = wizInput.value.trim();
       if(!v) return;
       
@@ -439,7 +439,7 @@
       }
     }
 
-    function selectLayout(nomeLayout, bgCol, accentCol, icon) {
+    window.selectLayout = function(nomeLayout, bgCol, accentCol, icon) {
       appendMsg('user', `Seleziono: ${nomeLayout}`);
       typingInd.classList.add('show');
       layoutCol.classList.remove('active');
@@ -468,7 +468,5 @@
       }, 1500);
     }
   </script>
-</body>
-</html>
 </body>
 </html>
