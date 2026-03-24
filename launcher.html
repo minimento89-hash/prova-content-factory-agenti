@@ -362,12 +362,24 @@
 
     import { applyTranslations, t } from "./src/core/i18n.js";
     
-    document.addEventListener('DOMContentLoaded', () => {
-        applyTranslations();
-        updateGreetings();
-        renderStudi();
-        initDragDrop();
-    });
+    function init() {
+        console.log("V10 Launcher Initializing...");
+        try {
+          applyTranslations();
+          updateGreetings();
+          renderStudi();
+          initDragDrop();
+          console.log("V10 Launcher Ready.");
+        } catch (e) {
+          console.error("V10 Launcher Init Error:", e);
+        }
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
 
 
     /* ========================================================
