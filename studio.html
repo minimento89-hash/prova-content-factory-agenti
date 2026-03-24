@@ -107,6 +107,43 @@
     }
     .lang-btn-s:hover { border-color: var(--accent-primary); color: var(--text-main); }
     .lang-btn-s.active { background: var(--accent-primary); color: white; border-color: var(--accent-primary); }
+
+    /* Topbar Chat Button */
+    .chat-btn-top {
+      width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border-light);
+      background: var(--bg-surface); color: var(--text-main); display:flex; align-items:center; justify-content:center;
+      font-size: 20px; transition: all 0.2s; cursor: pointer; box-shadow: var(--shadow-glass); position: relative; margin-right: 12px;
+    }
+    .chat-btn-top:hover { border-color: var(--accent-primary); color: var(--accent-primary); transform: translateY(-2px); }
+    .chat-badge { position: absolute; top: -4px; right: -4px; background: #ef4444; color: white; font-size: 9px; font-weight: 800; padding: 2px 5px; border-radius: 10px; border: 2px solid white; }
+
+    /* Chat Agent Overlay (Reuse Wizard Styles) */
+    .agent-chat-overlay {
+      position: fixed; inset: 0; background: rgba(248, 250, 252, 0.4);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      z-index: 3000; display: none; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.4s ease;
+    }
+    .agent-chat-overlay.show { display: flex; opacity: 1; }
+
+    .agent-chat-glass {
+      background: rgba(255, 255, 255, 0.85); border: 1px solid rgba(255, 255, 255, 1);
+      box-shadow: 0 40px 80px rgba(15, 23, 42, 0.15), 0 0 0 1px rgba(15, 23, 42, 0.05);
+      border-radius: 32px; width: 95%; max-width: 800px; height: 80vh;
+      display: flex; overflow: hidden; transform: translateY(30px) scale(0.98);
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .agent-chat-overlay.show .agent-chat-glass { transform: translateY(0) scale(1); }
+
+    .chat-sidebar { width: 280px; border-right: 1px solid var(--border-light); background: rgba(255,255,255,0.4); display: flex; flex-direction: column; }
+    .chat-main-area { flex: 1; display: flex; flex-direction: column; background: white; }
+    
+    .chat-agent-item { padding: 16px; border-bottom: 1px solid var(--border-light); cursor: pointer; transition: all 0.2s; display: flex; gap: 12px; align-items: center;}
+    .chat-agent-item:hover { background: var(--bg-core); }
+    .chat-agent-item.active { background: white; border-right: 3px solid var(--accent-primary); }
+    .cai-av { width: 36px; height: 36px; border-radius: 10px; display:flex; align-items:center; justify-content:center; flex-shrink: 0; font-size: 18px;}
+    .cai-n { font-size: 14px; font-weight: 700; color: var(--text-main); }
+    .cai-r { font-size: 10px; font-family: monospace; color: var(--text-muted); }
   </style>
 
 </head>
@@ -157,8 +194,12 @@
   <main class="studio-main">
     
     <header class="s-header">
-      <h1 class="s-title">Buongiorno.</h1>
+      <h1 class="s-title" id="studioTitleHeader">Buongiorno.</h1>
       <div class="s-actions">
+        <button class="chat-btn-top" onclick="window.openAgentChat()" title="Apri Chat Agenti">
+          <i class="ph ph-chat-circle-dots"></i>
+          <span class="chat-badge">3</span>
+        </button>
         <div class="lang-selector-studio" style="display:flex; gap:8px; margin-right:12px;">
           <button class="lang-btn-s" onclick="window.setLang('it')" id="lang-it">IT</button>
           <button class="lang-btn-s" onclick="window.setLang('en')" id="lang-en">EN</button>
@@ -352,6 +393,48 @@
       <button class="sp-add-btn" style="margin-top: 24px;"><i class="ph-bold ph-plus"></i> <span data-t="add_event">Aggiungi Evento</span></button>
     </div>
   </div>
+  <!-- AGENT CHAT OVERLAY -->
+  <div class="agent-chat-overlay" id="agentChatOverlay">
+    <div class="agent-chat-glass">
+      <div class="chat-sidebar">
+        <div style="padding: 24px; font-weight: 800; font-size: 18px; font-family:var(--font-serif); border-bottom: 1px solid var(--border-light);">I Tuoi Agenti</div>
+        <div class="chat-agent-item active">
+          <div class="cai-av" style="background:#ede9fe; color:#8b5cf6;"><i class="ph ph-code"></i></div>
+          <div><div class="cai-n">Antigravity</div><div class="cai-r">ARCHITETTO</div></div>
+        </div>
+        <div class="chat-agent-item">
+          <div class="cai-av" style="background:#fce7f3; color:#ec4899;"><i class="ph ph-paint-brush"></i></div>
+          <div><div class="cai-n">Designer AI</div><div class="cai-r">GRAFICA</div></div>
+        </div>
+        <div class="chat-agent-item">
+          <div class="cai-av" style="background:#e0f2fe; color:#0ea5e9;"><i class="ph ph-newspaper"></i></div>
+          <div><div class="cai-n">Capo Redattore</div><div class="cai-r">DIREZIONE</div></div>
+        </div>
+      </div>
+
+      <div class="chat-main-area">
+        <div class="sp-hdr" style="background: white;">
+          <div class="sph-title">
+            <div class="sph-icon" style="background: #ede9fe; color: #8b5cf6;"><i class="ph ph-code"></i></div>
+            <div>
+              <div class="sph-name">Antigravity V10</div>
+              <div class="sph-role">Status: Pronta per lo sviluppo</div>
+            </div>
+          </div>
+          <button class="sph-close" onclick="window.closeAgentChat()"><i class="ph ph-x"></i></button>
+        </div>
+
+        <div class="chat-msgs" id="agentChatMsgs" style="flex: 1; padding: 24px; background: var(--bg-core); overflow-y: auto;">
+          <div class="msg bot"><div class="msg-content">Ciao **Il Capo**. Sono pronto a lavorare su questo studio. Come procediamo?</div></div>
+        </div>
+
+        <div class="chat-input" style="background: white; border-top: 1px solid var(--border-light);">
+          <input type="text" class="c-input-box" id="agentInput" placeholder="Cosa dobbiamo fare ora?" onkeypress="if(event.key === 'Enter') window.sendAgentMsg()">
+          <button class="c-btn" onclick="window.sendAgentMsg()"><i class="ph-bold ph-paper-plane-right"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script type="module">
     import { applyTranslations, t, setLang, getLang } from "./src/core/i18n.js";
@@ -378,6 +461,19 @@
         updateLangSelectors(current);
         applyTranslations();
         
+        // FASE 4: Cloud Sync & Studio Identification
+        const params = new URLSearchParams(window.location.search);
+        const studioId = params.get('id');
+        const dbStudi = JSON.parse(localStorage.getItem('v10_studi_cloud')) || [];
+        const studioInfo = dbStudi.find(s => s.id === studioId);
+
+        if (studioInfo) {
+          console.log("Studio detected:", studioInfo.title);
+          document.getElementById('studioTitleHeader').textContent = studioInfo.title;
+          document.title = `Content Factory V10 — ${studioInfo.title}`;
+          // Potremmo anche personalizzare i widget in base ai tag o alla descrizione
+        }
+
         const grid = document.getElementById('dashboardGrid');
         if (typeof Sortable !== 'undefined') {
           new Sortable(grid, {
@@ -392,6 +488,37 @@
     document.addEventListener('langChanged', () => {
         applyTranslations();
     });
+    window.openAgentChat = function() {
+      document.getElementById('agentChatOverlay').classList.add('show');
+      setTimeout(() => document.getElementById('agentInput').focus(), 500);
+    }
+
+    window.closeAgentChat = function() {
+      document.getElementById('agentChatOverlay').classList.remove('show');
+    }
+
+    window.sendAgentMsg = function() {
+      const inp = document.getElementById('agentInput');
+      const box = document.getElementById('agentChatMsgs');
+      const v = inp.value.trim();
+      if(!v) return;
+
+      const userMsg = document.createElement('div');
+      userMsg.className = 'msg user';
+      userMsg.innerHTML = `<div class="msg-content">${v}</div>`;
+      box.appendChild(userMsg);
+      inp.value = '';
+      box.scrollTop = box.scrollHeight;
+
+      // Mock AI Reply
+      setTimeout(() => {
+        const botMsg = document.createElement('div');
+        botMsg.className = 'msg bot';
+        botMsg.innerHTML = `<div class="msg-content">Sto elaborando la tua richiesta per lo studio... La sincronizzazione Cloud è attiva. Procedo con la Fase 5? 🦅</div>`;
+        box.appendChild(botMsg);
+        box.scrollTop = box.scrollHeight;
+      }, 1000);
+    }
   </script>
 
 </body>
