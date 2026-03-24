@@ -9,326 +9,282 @@
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
   
   <style>
-    /* LAYOUT BASE V10: Permanent Sidebar + Main */
+    /* LAYOUT BASE V10: Restoration of Classic Studio Sidebar */
     body { display: flex; height: 100vh; overflow: hidden; margin: 0; background: var(--bg-core); font-family: 'Inter', sans-serif; }
     
-    /* SIDEBAR (REPLICA LAUNCHER) */
-    .v10-sidebar {
-      width: 320px; border-right: 1px solid var(--border-light); background: var(--bg-surface);
-      display: flex; flex-direction: column; overflow-y: hidden; box-shadow: 10px 0 30px rgba(0,0,0,0.02);
+    /* SIDEBAR CLASSICA RESTAURATA */
+    .studio-sidebar-v10 {
+      width: 260px; border-right: 1px solid var(--border-light); background: var(--bg-surface);
+      display: flex; flex-direction: column; overflow-y: auto; box-shadow: 10px 0 30px rgba(0,0,0,0.02);
       z-index: 10; flex-shrink: 0;
     }
-    .sidebar-brand { padding: 32px 30px; border-bottom: 1px solid var(--border-light); background: white; cursor: pointer; }
-    .sb-logo { display:flex; align-items:center; gap:14px; margin-bottom: 4px; }
-    .sb-icon { width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, var(--accent-primary), #db2777); color: white; display:flex; align-items:center; justify-content:center; font-size: 24px; box-shadow: 0 8px 16px rgba(139, 92, 246, 0.2);}
-    .sb-name { font-family: var(--font-serif); font-size: 26px; color: var(--text-main); line-height: 1;}
-    .sb-tag { font-family: monospace; font-size: 10px; color: var(--accent-primary); font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase;}
+    .ss-brand { padding: 32px 24px; border-bottom: 2px solid var(--border-light); background: white; cursor: pointer; display:flex; align-items:center; gap:12px;}
+    .ss-brand-ic { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, var(--accent-primary), #db2777); color: white; display:flex; align-items:center; justify-content:center; font-size: 20px;}
+    .ss-brand-name { font-family: var(--font-serif); font-size: 22px; color: var(--text-main); }
 
-    .sidebar-secretary { flex: 1; border-top: 1px solid var(--border-light); display: flex; flex-direction: column; overflow-y: auto; background: var(--bg-core); }
-    .sec-hdr { padding: 24px 30px; border-bottom: 1px solid var(--border-light); display: flex; align-items: center; justify-content: space-between; background: white;}
-    .sec-title { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.1em; }
-    .sec-badge { background: #fef2f2; color: #ef4444; padding: 2px 8px; border-radius: 8px; font-size: 10px; font-weight: 800; }
-    
-    .sec-body { padding: 24px; }
-    .alert-card { background: white; border-radius: 18px; padding: 16px; border: 1px solid var(--border-light); margin-bottom: 12px; box-shadow: var(--shadow-glass); }
-    .ac-title { font-size: 13px; font-weight: 700; color: var(--text-main); margin-bottom: 10px; line-height: 1.3; }
-    .ac-btn-ok { width: 100%; border: none; background: #d1fae5; color: #10b981; padding: 10px; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 12px;}
+    .ss-nav { padding: 24px 12px; flex: 1; }
+    .ss-lbl { font-size: 10px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.1em; padding: 0 12px; margin-bottom: 12px; display: block;}
+    .ss-item { 
+      padding: 12px 14px; border-radius: 12px; display: flex; align-items: center; gap: 12px; 
+      color: var(--text-muted); text-decoration: none; font-size: 13px; font-weight: 600; margin-bottom: 4px; transition: all 0.2s;
+    }
+    .ss-item:hover { background: var(--bg-core); color: var(--text-main); }
+    .ss-item.active { background: var(--accent-light); color: var(--accent-primary); border: 1px solid rgba(139,92,246,0.1); }
+    .ss-item-ic { font-size: 18px; }
 
-    /* MAIN STAGE */
-    .studio-main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; background: var(--bg-core); }
-    .s-header { padding: 24px 40px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: rgba(248, 250, 252, 0.8); backdrop-filter: blur(20px); z-index: 100;}
-    .s-title { font-family: var(--font-serif); font-size: 32px; color: var(--text-main); margin: 0; }
-    .s-actions { display: flex; gap: 12px; }
-    .s-btn-v10 { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--border-light); background: white; color: var(--text-main); display:flex; align-items:center; justify-content:center; font-size: 20px; cursor: pointer; transition: all 0.2s; box-shadow: var(--shadow-glass); position: relative;}
-    .s-btn-v10:hover { border-color: var(--accent-primary); color: var(--accent-primary); transform: translateY(-2px); }
-    .s-badge { position: absolute; top: -2px; right: -2px; background: #ef4444; color: white; font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 10px; border: 2px solid white; }
+    .ss-footer { padding: 20px; border-top: 1px solid var(--border-light); }
+    .btn-back-hub { width: 100%; padding: 12px; border: 1px solid var(--border-light); background: white; border-radius: 12px; font-size: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; display:flex; align-items:center; justify-content:center; gap: 8px; transition: all 0.2s;}
+    .btn-back-hub:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
 
-    /* TYPOGRAPHY REFINEMENTS FOR WIDGETS */
-    .wd-title { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 24px;}
-    .wd-value { font-size: 36px; font-weight: 800; color: var(--text-main); line-height: 1; letter-spacing: -0.02em; }
-    .wd-label { font-size: 10px; color: var(--text-muted); margin-top: 8px; font-weight: 600;}
+    /* STUDIO MAIN STAGE */
+    .studio-stage { flex: 1; display:flex; flex-direction:column; overflow-y: auto; background: var(--bg-core); }
+    .stage-hdr { padding: 24px 40px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; background: rgba(248, 250, 252, 0.82); backdrop-filter: blur(24px); z-index: 100; border-bottom: 1px solid var(--border-light);}
+    .stage-title { font-family: var(--font-serif); font-size: 28px; color: var(--text-main); }
 
-    /* AGENT CHAT OVERLAY (REDESIGNED MAP) */
-    .agent-chat-overlay {
-      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4);
-      backdrop-filter: blur(24px); z-index: 3000; display: none; align-items: center; justify-content: center;
+    /* KPIS & WIDGETS */
+    .dashboard-grid-v10 { padding: 40px; }
+
+    /* AGENT OVERLAY V10: 3 Panels Resizable Mind Map */
+    .agent-overlay-v10 {
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(28px);
+      z-index: 3000; display: none; align-items: center; justify-content: center;
       opacity: 0; transition: opacity 0.4s ease;
     }
-    .agent-chat-overlay.show { display: flex; opacity: 1; }
+    .agent-overlay-v10.show { display: flex; opacity: 1; }
 
-    .agent-chat-glass {
-      background: white; border-radius: 40px; width: 95%; max-width: 1200px; height: 85vh;
-      display: flex; overflow: hidden; box-shadow: 0 40px 100px rgba(0,0,0,0.2); 
-      transform: scale(0.95); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    .ao-glass {
+      background: white; border-radius: 40px; width: 96%; max-width: 1300px; height: 88vh;
+      display: flex; overflow: hidden; box-shadow: 0 40px 100px rgba(0,0,0,0.25);
+      transform: scale(0.97); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .agent-chat-overlay.show .agent-chat-glass { transform: scale(1); }
+    .agent-overlay-v10.show .ao-glass { transform: scale(1); }
 
-    .chat-col-left { width: 440px; border-right: 1px solid var(--border-light); background: white; display:flex; flex-direction: column;}
-    .chat-col-right { flex: 1; background: #f8fafc; position: relative; display: flex; flex-direction: column; }
-
-    /* Mind Map SVG Dynamic */
-    .agent-map-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
-    .map-node-pro {
-      position: absolute; width: 120px; height: 120px; border-radius: 50%; background: white;
-      border: 1px solid var(--border-light); box-shadow: 0 16px 40px rgba(0,0,0,0.06);
-      display:flex; flex-direction: column; align-items:center; justify-content:center;
-      z-index: 2; transition: all 0.3s; cursor: grab; padding: 10px; text-align: center;
-    }
-    .map-node-pro:hover { border-color: var(--accent-primary); transform: scale(1.05); box-shadow: 0 20px 50px rgba(139,92,246,0.15); }
-    .node-icon { font-size: 32px; color: var(--accent-primary); margin-bottom: 8px; }
-    .node-name { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-main); }
-    .node-status { font-size: 8px; color: #10b981; font-weight: 700; margin-top: 4px; display: flex; align-items: center; gap: 4px; }
-    .node-status::before { content: ''; width: 6px; height: 6px; background: #10b981; border-radius: 50%; display: inline-block; box-shadow: 0 0 10px #10b981;}
-
-    /* Connection Curve */
-    .wire { stroke: var(--accent-primary); stroke-width: 2; fill: none; opacity: 0.3; stroke-dasharray: 4 4; animation: draw 20s infinite linear; }
-    @keyframes draw { to { stroke-dashoffset: -100; } }
-
-    /* Chat Messages Styles */
-    .msgs-container { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; background: var(--bg-core); }
-    .msg-v10 { max-width: 85%; padding: 16px 20px; border-radius: 20px; font-size: 14px; line-height: 1.5; box-shadow: var(--shadow-glass); position: relative; }
-    .msg-v10.bot { background: white; border: 1px solid var(--border-light); align-self: flex-start; border-bottom-left-radius: 4px; }
-    .msg-v10.user { background: var(--text-main); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+    /* Left: Chat Resizable */
+    .ao-chat { width: 380px; min-width: 300px; border-right: 1px solid var(--border-light); display: flex; flex-direction: column; background: var(--bg-surface); position: relative;}
+    .ao-msgs { flex: 1; padding: 24px; overflow-y: auto; display:flex; flex-direction: column; gap: 16px; }
+    .msg-ao { max-width: 85%; padding: 14px 18px; border-radius: 18px; font-size: 14px; line-height: 1.5; box-shadow: var(--shadow-glass); }
+    .msg-ao.bot { background: white; border: 1px solid var(--border-light); align-self: flex-start; border-bottom-left-radius: 4px; }
+    .msg-ao.user { background: var(--accent-primary); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+    .ao-inp-area { padding: 24px; background: white; border-top: 1px solid var(--border-light); }
+    .ao-pill { display: flex; background: var(--bg-core); border-radius: 100px; padding: 6px 6px 6px 20px; border: 1px solid var(--border-light); box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+    .ao-pill input { flex: 1; border: none; background: transparent; outline: none; font-size: 14px; }
     
-    /* Input Pill Bar */
-    .chat-input-area { padding: 30px; background: white; border-top: 1px solid var(--border-light); }
-    .pill-input { display: flex; background: var(--bg-core); border-radius: 100px; padding: 6px 6px 6px 24px; border: 1px solid var(--border-light); transition: all 0.2s; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
-    .pill-input:focus-within { border-color: var(--accent-primary); background: white; box-shadow: 0 0 0 4px rgba(139,92,246,0.1); }
-    .pill-input input { flex: 1; border: none; background: transparent; outline: none; font-size: 14px; color: var(--text-main); }
-    .pill-send { width: 44px; height: 44px; border-radius: 50%; background: var(--accent-primary); color: white; border: none; font-size: 20px; cursor: pointer; display:flex; align-items:center; justify-content:center; transition: transform 0.2s;}
-    .pill-send:hover { transform: scale(1.05); }
+    /* Center: Mind Map (The Heart) */
+    .ao-map { flex: 1; position: relative; background: radial-gradient(circle at center, #f1f5f9 0%, #ffffff 100%); overflow: hidden; }
+    .ao-map-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+    .node-v10 {
+      position: absolute; width: 110px; height: 110px; border-radius: 50%; background: white;
+      border: 1px solid var(--border-light); display: flex; flex-direction: column; align-items: center; justify-content: center;
+      box-shadow: 0 14px 30px rgba(0,0,0,0.06); z-index: 5; transition: transform 0.2s; cursor: grab; padding: 8px; text-align: center;
+    }
+    .node-v10:hover { transform: scale(1.05); border-color: var(--accent-primary); }
+    .node-v10.core { border-width: 2px; border-color: var(--accent-primary); box-shadow: 0 0 30px rgba(139,92,246,0.1); }
+    .ni { font-size: 28px; color: var(--accent-primary); margin-bottom: 4px; }
+    .nn { font-size: 10px; font-weight: 800; text-transform: uppercase; color: var(--text-main); }
+    
+    /* Right: Agent Monitor */
+    .ao-monitor { width: 300px; min-width: 250px; border-left: 1px solid var(--border-light); display:flex; flex-direction: column; background: #f8fafc; }
+    .aom-hdr { padding: 24px; border-bottom: 1px solid var(--border-light); background: white;}
+    .aom-list { flex: 1; padding: 20px; overflow-y: auto; }
+    .aom-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; background: white; border: 1px solid var(--border-light); border-radius: 12px; margin-bottom: 10px; box-shadow: var(--shadow-glass); }
+    .aom-name { font-size: 12px; font-weight: 700; color: var(--text-main); }
+    .aom-dot { width: 8px; height: 8px; border-radius: 50%; box-shadow: 0 0 8px rgba(0,0,0,0.1); }
+    .aom-dot.green { background: #10b981; box-shadow: 0 0 10px #10b981; }
+    .aom-dot.red { background: #ef4444; box-shadow: 0 0 10px #ef4444; }
+    .aom-dot.gray { background: #94a3b8; }
 
-    /* Settings Modal */
-    .settings-v10-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(20px); z-index: 5000; display: none; align-items:center; justify-content:center; opacity: 0; transition: opacity 0.3s; }
-    .settings-v10-overlay.show { display: flex; opacity: 1; }
-    .settings-v10 { background: white; border-radius: 36px; padding: 40px; width: 460px; box-shadow: 0 40px 100px rgba(0,0,0,0.2); }
+    /* Connections Styling */
+    .wire-p { stroke: var(--accent-primary); stroke-width: 2; fill: none; opacity: 0.3; stroke-dasharray: 4 4; animation: wireFlow 20s infinite linear; }
+    @keyframes wireFlow { to { stroke-dashoffset: -100; } }
   </style>
 </head>
 <body>
 
-  <!-- SIDEBAR (UNIFORM WITH LAUNCHER) -->
-  <aside class="v10-sidebar">
-    <div class="sidebar-brand" onclick="location.href='launcher.html'">
-      <div class="sb-logo">
-        <div class="sb-icon"><i class="ph-fill ph-sparkle"></i></div>
-        <div class="sb-name">Factory</div>
-      </div>
-      <div class="sb-tag">Meta-Platform V.10</div>
+  <!-- SIDEBAR CLASSICA (V9 RE-EVOLVED) -->
+  <aside class="studio-sidebar-v10" id="studioSidebar">
+    <div class="ss-brand" onclick="location.href='launcher.html'">
+      <div class="ss-brand-ic"><i class="ph-fill ph-sparkle"></i></div>
+      <div class="ss-brand-name">Factory V10</div>
     </div>
 
-    <div class="sidebar-secretary">
-      <div class="sec-hdr">
-        <div class="sec-title">Segretario Globale</div>
-        <div class="sec-badge">Live Sync</div>
-      </div>
+    <nav class="ss-nav">
+      <span class="ss-lbl">Core Occupancy</span>
+      <a href="#" class="ss-item active"><i class="ph ph-squares-four ss-item-ic"></i> Dashboard</a>
+      <a href="#" class="ss-item"><i class="ph ph-user-focus ss-item-ic"></i> Monitor Agenti</a>
       
-      <div class="sec-body">
-        <div class="alert-card">
-          <div class="ac-title">Il Team AI è pronto per nuove direttive in questo studio.</div>
-          <button class="ac-btn-ok" onclick="openAgentChat()">Apri Chat Agenti</button>
-        </div>
-        <div class="alert-card" style="opacity: 0.6; border-style: dashed;">
-          <div class="ac-title">Nessun'altra approvazione pende da altri studi.</div>
-        </div>
-      </div>
-    </div>
+      <span class="ss-lbl">Produzione</span>
+      <a href="#" class="ss-item"><i class="ph ph-pen-nib ss-item-ic"></i> Redazione Team</a>
+      <a href="#" class="ss-item"><i class="ph ph-bezier-curve ss-item-ic"></i> Mixer Strategie</a>
+      
+      <span class="ss-lbl">Distribuzione</span>
+      <a href="#" class="ss-item"><i class="ph ph-share-network ss-item-ic"></i> Social Hub</a>
+      <a href="#" class="ss-item"><i class="ph ph-chart-line-up ss-item-ic"></i> Sentiment Tech</a>
 
-    <!-- Bottom Profile back link -->
-    <div style="padding: 24px; border-top: 1px solid var(--border-light);" onclick="location.href='launcher.html'">
-      <div style="display:flex; align-items:center; gap:12px; cursor:pointer; opacity: 0.7;">
-        <i class="ph ph-arrow-left"></i>
-        <span style="font-size: 13px; font-weight: 700;">Launcher Principale</span>
-      </div>
+      <span class="ss-lbl">Privato</span>
+      <a href="#" class="ss-item"><i class="ph ph-shield-check ss-item-ic"></i> Cyber Security</a>
+      <a href="#" class="ss-item"><i class="ph ph-coffee ss-item-ic"></i> Sala Relax RM</a>
+    </nav>
+
+    <div class="ss-footer">
+      <button class="btn-back-hub" onclick="location.href='launcher.html'"><i class="ph ph-house"></i> Launcher Hub</button>
     </div>
   </aside>
 
-  <!-- MAIN AREA (STUDIO) -->
-  <main class="studio-main">
-    <header class="s-header">
-      <h1 class="s-title" id="studioTitleHeader">Buongiorno.</h1>
-      <div class="s-actions">
-        <button class="s-btn-v10" onclick="window.openAgentChat()" title="Agent Team">
+  <!-- STAGE PRINCIPALE -->
+  <main class="studio-stage">
+    <header class="stage-hdr">
+      <h1 class="stage-title" id="studioTitle">Benvenuto nello Studio</h1>
+      <div style="display:flex; gap:12px;">
+        <button class="hub-logout" style="width:40px; height:40px; background:white; color:var(--text-main); border:1px solid var(--border-light); font-size:20px; box-shadow:var(--shadow-glass); position:relative;" onclick="openMindMap()">
           <i class="ph ph-chat-circle-dots"></i>
-          <span class="s-badge">3</span>
+          <span style="position:absolute; top:-4px; right:-4px; background:#ef4444; color:white; font-size:9px; width:16px; height:16px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800;">3</span>
         </button>
-        <button class="s-btn-v10" onclick="window.openSettings()" title="Impostazioni">
-          <i class="ph ph-gear-six"></i>
-        </button>
-        <div class="s-btn-v10"><i class="ph ph-magnifying-glass"></i></div>
-        <div class="s-btn-v10"><i class="ph ph-bell"></i></div>
+        <button class="hub-logout" style="width:40px; height:40px; background:white; color:var(--text-main); border:1px solid var(--border-light); font-size:20px; box-shadow:var(--shadow-glass);"><i class="ph ph-gear-six"></i></button>
       </div>
     </header>
 
-    <div class="dashboard-grid" id="dashboardGrid" style="padding: 40px;">
-      
-      <!-- KPI 1 -->
-      <div class="widget-box w-col-4">
-        <div class="drag-bar"><i class="ph ph-dots-six"></i></div>
-        <div class="wd-title">Live Score</div>
-        <div class="wd-value">842</div>
-        <div class="wd-label">HYPE GLOBALE • POSITIVO</div>
-      </div>
-
-      <!-- KPI 2 -->
-      <div class="widget-box w-col-4">
-        <div class="drag-bar"><i class="ph ph-dots-six"></i></div>
-        <div class="wd-title">Queue Status</div>
-        <div class="wd-value">12</div>
-        <div class="wd-label">POST PRONTI PER LOOP</div>
-      </div>
-
-      <!-- TEAM AI WIDGET -->
-      <div class="widget-box w-col-8">
-        <div class="drag-bar"><i class="ph ph-dots-six"></i></div>
-        <h2 style="font-family: var(--font-serif); font-size: 24px; margin-bottom: 30px;">La Squadra Operativa</h2>
-        <div style="display: flex; flex-direction: column; gap: 20px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; padding: 16px; background:var(--bg-core); border-radius:16px; border:1px solid var(--border-light);">
-            <div style="display:flex; gap:16px; align-items:center;">
-              <div style="width:40px; height:40px; background:#ede9fe; color:#8b5cf6; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px;"><i class="ph ph-sparkle"></i></div>
-              <div><div style="font-weight:700; font-size:14px;">Antigravity</div><div style="font-size:11px; opacity:0.6;">Orchestratore di Flussi</div></div>
-            </div>
-            <div style="font-size:10px; font-weight:800; color:#10b981;">ONLINE</div>
-          </div>
-          <div style="display:flex; justify-content:space-between; align-items:center; padding: 16px; background:var(--bg-core); border-radius:16px; border:1px solid var(--border-light);">
-            <div style="display:flex; gap:16px; align-items:center;">
-              <div style="width:40px; height:40px; background:#fef3c7; color:#f59e0b; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px;"><i class="ph ph-star"></i></div>
-              <div><div style="font-weight:700; font-size:14px;">Claude.ai</div><div style="font-size:11px; opacity:0.6;">Intelligenza Logica & Testi</div></div>
-            </div>
-            <div style="font-size:10px; font-weight:800; color:#10b981;">CONNECTED</div>
-          </div>
+    <div class="dashboard-grid-v10">
+      <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:24px;">
+        <!-- KPI 1 -->
+        <div class="widget-box" style="padding:24px;">
+          <div class="wd-title">Live Score Studio</div>
+          <div class="wd-value">842</div>
+          <div class="wd-label">HYPE • POSITIVO</div>
+        </div>
+        <!-- KPI 2 -->
+        <div class="widget-box" style="padding:24px;">
+          <div class="wd-title">Social Queue</div>
+          <div class="wd-value">12</div>
+          <div class="wd-label">POST PRONTI IN CODA</div>
+        </div>
+        <!-- KPI 3 -->
+        <div class="widget-box" style="padding:24px;">
+          <div class="wd-title">Status Security</div>
+          <div class="wd-value">100%</div>
+          <div class="wd-label">NO BUG • MODALITÀ SICURA</div>
         </div>
       </div>
-
-      <div class="widget-box widget-dark w-col-4">
-        <div class="drag-bar"><i class="ph ph-dots-six"></i></div>
-        <div class="wd-title" style="color: rgba(255,255,255,0.4);">Direzione</div>
-        <div class="wd-value" style="color: white; font-size: 24px;">Capo Redattore</div>
-        <div class="wd-label" style="color: rgba(255,255,255,0.6);">SCOLLEGATO — FASE 6</div>
-      </div>
-
     </div>
   </main>
 
-  <!-- AGENT CHAT OVERLAY (BEAUTIFUL MAP + PILL CHAT) -->
-  <div class="agent-chat-overlay" id="agentChatOverlay">
-    <div class="agent-chat-glass">
+  <!-- AGENT INTERACTIVE WORKSPACE (3-PANELS OVERLAY) -->
+  <div class="agent-overlay-v10" id="aoOverlay">
+    <div class="ao-glass">
       
-      <!-- CHAT LOG -->
-      <div class="chat-col-left">
-        <div style="padding: 30px; border-bottom: 1px solid var(--border-light); display:flex; justify-content:space-between; align-items:center;">
-          <h2 style="font-family: var(--font-serif); font-size: 24px; margin: 0;">Intelligence</h2>
-          <button style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size: 24px;" onclick="closeAgentChat()"><i class="ph ph-x-circle"></i></button>
+      <!-- LFT: CHAT -->
+      <div class="ao-chat" id="resizableChat">
+        <div style="padding:24px; border-bottom:1px solid var(--border-light); display:flex; justify-content:space-between; align-items:center; background:white;">
+          <h3 style="font-family:var(--font-serif); margin:0;">Sala Controllo</h3>
+          <button style="background:none; border:none; cursor:pointer; font-size:20px;" onclick="closeMindMap()"><i class="ph ph-x-circle"></i></button>
         </div>
-
-        <div class="msgs-container" id="agentChatMsgs">
-          <div class="msg-v10 bot">Buongiorno **Il Capo**. Sono Antigravity. I miei circuiti sono connessi a questo Studio. Claude è in attesa di istruzioni.</div>
+        <div class="ao-msgs" id="aoMsgs">
+          <div class="msg-ao bot">Il team è ai tuoi ordini. Questa è la tua nuova **Sala di Controllo Multi-Agente**.</div>
         </div>
-
-        <div class="chat-input-area">
-          <div class="pill-input">
-            <input type="text" id="agentInput" placeholder="Invia un comando al Team AI..." onkeypress="if(event.key==='Enter') sendAgentMsg()">
-            <button class="pill-send" onclick="sendAgentMsg()"><i class="ph-bold ph-paper-plane-right"></i></button>
+        <div class="ao-inp-area">
+          <div class="ao-pill">
+            <input type="text" id="aoInp" placeholder="Ordina la creazione di un agente..." onkeypress="if(event.key==='Enter') sendAoMsg()">
+            <button style="width:36px; height:36px; border-radius:50%; background:var(--accent-primary); color:white; border:none; margin-right:4px; cursor:pointer;" onclick="sendAoMsg()"><i class="ph ph-paper-plane-right"></i></button>
           </div>
         </div>
       </div>
 
-      <!-- INTELLIGENCE MAP -->
-      <div class="chat-col-right">
-        <div style="padding: 30px; font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em;">Rete Neurale dello Studio</div>
+      <!-- CTR: MIND MAP (CIRCULAR CLUSTER V9 STYLE) -->
+      <div class="ao-map" id="aoMap">
+        <svg class="ao-map-svg" id="aoMapSvg"></svg>
         
-        <div style="flex:1; position:relative;" id="mapCanvas">
-          <svg class="agent-map-svg" id="mapSvg">
-            <!-- Dynamic Curves injected by JS -->
-          </svg>
+        <!-- CORE NODES (At the heart) -->
+        <div class="node-v10 core" id="node-user" style="top: 42%; left: 42%;">
+          <div class="ni" style="color:var(--text-main);"><i class="ph-fill ph-user-circle"></i></div>
+          <div class="nn">Il Capo</div>
+        </div>
 
-          <!-- MAP NODES -->
-          <div class="map-node-pro" id="node-user" style="top: 15%; left: 45%;">
-            <div class="node-icon" style="color: var(--text-main);"><i class="ph-fill ph-user-circle"></i></div>
-            <div class="node-name">Il Capo</div>
-          </div>
+        <div class="node-v10 core" id="node-anti" style="top: 50%; left: 35%;">
+          <div class="ni" style="color:#8b5cf6;"><i class="ph-fill ph-sparkle"></i></div>
+          <div class="nn">Antigravity</div>
+        </div>
 
-          <div class="map-node-pro" id="node-anti" style="top: 65%; left: 20%;">
-            <div class="node-icon" style="color: #8b5cf6;"><i class="ph-fill ph-sparkle"></i></div>
-            <div class="node-name">Antigravity</div>
-            <div class="node-status">Online</div>
-          </div>
+        <div class="node-v10 core" id="node-claude" style="top: 50%; left: 50%;">
+          <div class="ni" style="color:#f59e0b;"><i class="ph-fill ph-star"></i></div>
+          <div class="nn">Claude.ai</div>
+        </div>
 
-          <div class="map-node-pro" id="node-claude" style="top: 65%; left: 70%;">
-            <div class="node-icon" style="color: #f59e0b;"><i class="ph-fill ph-star"></i></div>
-            <div class="node-name">Claude</div>
-            <div class="node-status">Ready</div>
-          </div>
+        <!-- ORBITING NODES (Floating agents) -->
+        <div class="node-v10" id="node-designer" style="top: 20%; left: 25%;">
+          <div class="ni"><i class="ph ph-paint-brush"></i></div>
+          <div class="nn">Designer</div>
+        </div>
+        <div class="node-v10" id="node-writer" style="top: 15%; left: 55%;">
+          <div class="ni"><i class="ph ph-scroll"></i></div>
+          <div class="nn">Writer</div>
+        </div>
+        <div class="node-v10" id="node-dev" style="top: 65%; left: 60%;">
+          <div class="ni"><i class="ph ph-code"></i></div>
+          <div class="nn">Dev-Fix</div>
         </div>
       </div>
 
-    </div>
-  </div>
-
-  <!-- SETTINGS MODAL -->
-  <div class="settings-v10-overlay" id="settingsModal">
-    <div class="settings-v10">
-      <h2 style="font-family: var(--font-serif); font-size: 28px; margin-bottom: 24px;">Impostazioni Studio</h2>
-      <div style="display:flex; flex-direction:column; gap:24px;">
-        <div>
-          <label style="font-size:11px; font-weight:800; text-transform:uppercase; color:var(--text-muted); margin-bottom:12px; display:block;">Lingua di Lavoro</label>
-          <div style="display:flex; gap:10px;">
-            <button class="lang-btn-v10" onclick="setLang('it')" style="flex:1; padding:12px; border-radius:12px; border:1px solid var(--border-light); background:white; font-weight:700; cursor:pointer;">Italiano</button>
-            <button class="lang-btn-v10" onclick="setLang('en')" style="flex:1; padding:12px; border-radius:12px; border:1px solid var(--border-light); background:white; font-weight:700; cursor:pointer;">English</button>
-          </div>
+      <!-- RGT: MONITOR AGENTI -->
+      <div class="ao-monitor">
+        <div class="aom-hdr">
+          <div style="font-size:11px; font-weight:800; text-transform:uppercase; color:var(--text-muted); letter-spacing:0.12em;">Monitor Operativo</div>
+        </div>
+        <div class="aom-list" id="aomList">
+          <div class="aom-item"><div class="aom-name">Aura-Designer</div><div class="aom-dot green"></div></div>
+          <div class="aom-item"><div class="aom-name">Logic-Architect</div><div class="aom-dot green"></div></div>
+          <div class="aom-item"><div class="aom-name">Sentinel-Scanner</div><div class="aom-dot red"></div></div>
+          <div class="aom-item"><div class="aom-name">Scrittore (Sub)</div><div class="aom-dot gray"></div></div>
         </div>
       </div>
-      <button class="ac-btn-ok" style="margin-top:40px; background:var(--bg-core); color:var(--text-main);" onclick="closeSettings()">Salva e Chiudi</button>
+
     </div>
   </div>
 
   <script type="module">
-    import { applyTranslations, t, setLang } from "./src/core/i18n.js";
-    
-    window.setLang = (l) => { setLang(l); applyTranslations(); }
-    window.openSettings = () => document.getElementById('settingsModal').classList.add('show');
-    window.closeSettings = () => document.getElementById('settingsModal').classList.remove('show');
-    
-    window.openAgentChat = () => {
-      document.getElementById('agentChatOverlay').classList.add('show');
-      setTimeout(drawWires, 500); // Draw SVG wires after open
-      setTimeout(() => document.getElementById('agentInput').focus(), 600);
+    import { applyTranslations, t } from "./src/core/i18n.js";
+
+    window.openMindMap = () => {
+      document.getElementById('aoOverlay').classList.add('show');
+      setTimeout(renderWires, 500);
     }
-    window.closeAgentChat = () => document.getElementById('agentChatOverlay').classList.remove('show');
+    window.closeMindMap = () => document.getElementById('aoOverlay').classList.remove('show');
 
-    function drawWires() {
-      const svg = document.getElementById('mapSvg');
+    function renderWires() {
+      const svg = document.getElementById('aoMapSvg');
       svg.innerHTML = '';
-      const nodes = [
+      const conns = [
         { from: 'node-user', to: 'node-anti' },
-        { from: 'node-user', to: 'node-claude' }
+        { from: 'node-user', to: 'node-claude' },
+        { from: 'node-anti', to: 'node-designer' },
+        { from: 'node-user', to: 'node-writer' },
+        { from: 'node-claude', to: 'node-dev' }
       ];
-      
-      nodes.forEach(conn => {
-        const fEl = document.getElementById(conn.from).getBoundingClientRect();
-        const tEl = document.getElementById(conn.to).getBoundingClientRect();
-        const svgRect = svg.getBoundingClientRect();
 
-        const x1 = (fEl.left + fEl.width/2) - svgRect.left;
-        const y1 = (fEl.top + fEl.height/2) - svgRect.top;
-        const x2 = (tEl.left + tEl.width/2) - svgRect.left;
-        const y2 = (tEl.top + tEl.height/2) - svgRect.top;
+      conns.forEach(c => {
+        const e1 = document.getElementById(c.from).getBoundingClientRect();
+        const e2 = document.getElementById(c.to).getBoundingClientRect();
+        const rect = svg.getBoundingClientRect();
+
+        const x1 = (e1.left + e1.width/2) - rect.left;
+        const y1 = (e1.top + e1.height/2) - rect.top;
+        const x2 = (e2.left + e2.width/2) - rect.left;
+        const y2 = (e2.top + e2.height/2) - rect.top;
 
         const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
         const cpY = (y1 + y2) / 2;
         path.setAttribute("d", `M ${x1} ${y1} C ${x1} ${cpY}, ${x2} ${cpY}, ${x2} ${y2}`);
-        path.setAttribute("class", "wire");
+        path.setAttribute("class", "wire-p");
         svg.appendChild(path);
       });
     }
 
-    window.sendAgentMsg = () => {
-      const inp = document.getElementById('agentInput');
-      const box = document.getElementById('agentChatMsgs');
+    window.sendAoMsg = () => {
+      const inp = document.getElementById('aoInp');
+      const box = document.getElementById('aoMsgs');
       const v = inp.value.trim();
       if(!v) return;
 
       const userMsg = document.createElement('div');
-      userMsg.className = 'msg-v10 user';
+      userMsg.className = 'msg-ao user';
       userMsg.innerHTML = v;
       box.appendChild(userMsg);
       inp.value = '';
@@ -336,28 +292,24 @@
 
       setTimeout(() => {
         const botMsg = document.createElement('div');
-        botMsg.className = 'msg-v10 bot';
-        botMsg.innerHTML = `Comando ricevuto. Sto processando l'input attraverso i nodi Antigravity e Claude... 🦅`;
+        botMsg.className = 'msg-ao bot';
+        botMsg.innerHTML = `Istruzione passata a Claude e Antigravity. Generazione nuovo nodo in corso... <br><br><b>Ti serve uno "Scrittore" specializzato o un "Analista"?</b>`;
         box.appendChild(botMsg);
         box.scrollTop = box.scrollHeight;
       }, 1000);
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-        applyTranslations();
-        const params = new URLSearchParams(window.location.search);
-        const studioId = params.get('id');
-        const dbStudi = JSON.parse(localStorage.getItem('v10_studi_cloud')) || [];
-        const info = dbStudi.find(s => s.id === studioId);
-        if (info) document.getElementById('studioTitleHeader').textContent = info.title;
+      applyTranslations();
+      const params = new URLSearchParams(window.location.search);
+      const sid = params.get('id');
+      const db = JSON.parse(localStorage.getItem('v10_studi_cloud')) || [];
+      const info = db.find(s => s.id === sid);
+      if(info) document.getElementById('studioTitle').textContent = info.title;
 
-        if (typeof Sortable !== 'undefined') {
-          new Sortable(document.getElementById('dashboardGrid'), {
-              animation: 350, handle: '.drag-bar', ghostClass: 'sortable-ghost'
-          });
-        }
-        window.addEventListener('resize', drawWires);
+      window.addEventListener('resize', renderWires);
     });
   </script>
+
 </body>
 </html>

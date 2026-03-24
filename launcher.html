@@ -9,187 +9,166 @@
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
   
   <style>
-    /* LAYOUT BASE V10: Permanent Sidebar + Main */
+    /* LAYOUT BASE V10: Sidebar Hub + Main Dashboard */
     body { display: flex; height: 100vh; overflow: hidden; margin: 0; background: var(--bg-core); font-family: 'Inter', sans-serif; }
     
-    /* SIDEBAR DEFINITIVA: Brand + Segretario */
-    .v10-sidebar {
-      width: 340px; border-right: 1px solid var(--border-light); background: var(--bg-surface);
+    /* SIDEBAR COMPATTA V10 */
+    .v10-sidebar-hub {
+      width: 320px; border-right: 1px solid var(--border-light); background: var(--bg-surface);
       display: flex; flex-direction: column; overflow-y: hidden; box-shadow: 10px 0 30px rgba(0,0,0,0.02);
       z-index: 10; flex-shrink: 0;
     }
     
-    /* Brand Header Sidebar */
-    .sidebar-brand { padding: 32px 30px; border-bottom: 1px solid var(--border-light); background: white;}
-    .sb-logo { display:flex; align-items:center; gap:14px; margin-bottom: 4px; }
-    .sb-icon { width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, var(--accent-primary), #db2777); color: white; display:flex; align-items:center; justify-content:center; font-size: 24px; box-shadow: 0 8px 16px rgba(139, 92, 246, 0.2);}
-    .sb-name { font-family: var(--font-serif); font-size: 26px; color: var(--text-main); line-height: 1;}
-    .sb-tag { font-family: monospace; font-size: 10px; color: var(--accent-primary); font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase;}
+    /* Brand Header in Sidebar */
+    .sb-brand-area { padding: 32px 30px; border-bottom: 2px solid var(--border-light); background: white;}
+    .sb-logo-v10 { display:flex; align-items:center; gap:14px; margin-bottom: 4px; }
+    .sb-icon-v10 { width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, var(--accent-primary), #db2777); color: white; display:flex; align-items:center; justify-content:center; font-size: 24px; box-shadow: 0 8px 16px rgba(139, 92, 246, 0.2);}
+    .sb-name-v10 { font-family: var(--font-serif); font-size: 26px; color: var(--text-main); line-height: 1;}
+    .sb-sub-v10 { font-family: monospace; font-size: 10px; color: var(--accent-primary); font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase;}
 
-    /* Segretario Section in Sidebar */
-    .sidebar-secretary { flex: 1; border-top: 1px solid var(--border-light); display: flex; flex-direction: column; overflow-y: auto; background: var(--bg-core); }
-    .sec-hdr { padding: 24px 30px; border-bottom: 1px solid var(--border-light); display: flex; align-items: center; justify-content: space-between; background: white;}
-    .sec-title { font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.1em; }
-    .sec-badge { background: #fef2f2; color: #ef4444; padding: 2px 8px; border-radius: 8px; font-size: 10px; font-weight: 800; }
+    /* Secretary Integrated "Sotto" Brand */
+    .sb-secretary-hub { flex: 1; display: flex; flex-direction: column; overflow-y: auto; background: var(--bg-core); }
+    .sec-hdr-compact { padding: 24px 30px; background: white; border-bottom: 1px solid var(--border-light); display: flex; align-items: center; justify-content: space-between; }
+    .sec-lbl-compact { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.1em; }
+    .sec-badge-compact { background: #fef2f2; color: #ef4444; padding: 2px 8px; border-radius: 8px; font-size: 10px; font-weight: 800; }
     
-    .sec-body { padding: 24px; }
-    .sec-section-lbl { font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 16px; margin-top: 24px; display: block;}
-    .sec-section-lbl:first-child { margin-top: 0; }
+    .sec-body-compact { padding: 20px; }
+    .sec-alert { background: white; border-radius: 16px; padding: 14px; border: 1px solid var(--border-light); margin-bottom: 12px; box-shadow: var(--shadow-glass); position: relative;}
+    .sec-alert-type { font-size: 10px; font-weight: 800; text-transform: uppercase; color: var(--accent-primary); margin-bottom: 6px; display: block;}
+    .sec-alert-txt { font-size: 12px; font-weight: 700; color: var(--text-main); line-height: 1.4; margin-bottom: 10px;}
+    .sec-alert-actions { display: flex; gap: 8px; }
+    .btn-sec-sm { flex: 1; padding: 8px; border-radius: 8px; border: none; font-size: 11px; font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px;}
+    .btn-sec-ok { background: #d1fae5; color: #10b981; } .btn-sec-ok:hover { background: #10b981; color: white; }
+    .btn-sec-no { background: #fef2f2; color: #ef4444; } .btn-sec-no:hover { background: #ef4444; color: white; }
 
-    /* Alert / Task Card */
-    .alert-card { background: white; border-radius: 18px; padding: 16px; border: 1px solid var(--border-light); margin-bottom: 12px; box-shadow: var(--shadow-glass); position: relative; overflow: hidden;}
-    .ac-type { font-size: 9px; font-weight: 800; text-transform: uppercase; color: var(--accent-primary); margin-bottom: 8px; display: block; opacity: 0.7;}
-    .ac-title { font-size: 13px; font-weight: 700; color: var(--text-main); line-height: 1.3; margin-bottom: 4px; }
-    .ac-studio { font-family: monospace; font-size: 8px; color: var(--text-muted); display: block; margin-bottom: 12px;}
-    .ac-actions { display: flex; gap: 8px; }
-    .ac-btn { flex: 1; padding: 10px; border-radius: 10px; border: none; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px;}
-    .ac-btn-ok { background: #d1fae5; color: #10b981; } .ac-btn-ok:hover { background: #10b981; color: white; }
-    .ac-btn-no { background: #fef2f2; color: #ef4444; } .ac-btn-no:hover { background: #ef4444; color: white; }
+    /* DASHBOARD CENTER */
+    .dashboard-center { flex: 1; display: flex; flex-direction: column; overflow-y: auto; background: var(--bg-core); }
+    .tb-hub { padding: 24px 60px; display: flex; justify-content: flex-end; align-items: center; position: sticky; top: 0; background: rgba(248, 250, 252, 0.8); backdrop-filter: blur(20px); z-index: 100; border-bottom: 1px solid var(--border-light);}
+    .hub-profile { display: flex; gap: 12px; align-items: center; padding: 6px 14px; background: white; border: 1px solid var(--border-light); border-radius: 100px; box-shadow: var(--shadow-glass); }
+    .hub-name { font-size: 12px; font-weight: 700; color: var(--text-main); }
+    .hub-logout { width: 30px; height: 30px; border-radius: 50%; border: none; background: #fee2e2; color: #ef4444; cursor: pointer; display:flex; align-items:center; justify-content:center; transition: 0.2s;}
 
-    /* MAIN AREA REFINEMENTS */
-    .launcher-main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; background: var(--bg-core); }
-    
-    /* Topbar Minimal e Pulita */
-    .v10-topbar { padding: 24px 60px; display: flex; justify-content: flex-end; align-items: center; position: sticky; top: 0; background: rgba(248, 250, 252, 0.8); backdrop-filter: blur(16px); z-index: 100;}
-    .tb-user { display: flex; gap: 12px; align-items: center; padding: 8px 16px; background: white; border: 1px solid var(--border-light); border-radius: 100px; box-shadow: var(--shadow-glass); }
-    .tb-av { width: 32px; height: 32px; border-radius: 50%; background: var(--bg-core); border: 1px solid var(--border-light); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:12px;}
-    .tb-name { font-size: 13px; font-weight: 700; color: var(--text-main); }
-    .tb-logout { width: 32px; height: 32px; border-radius: 50%; border: none; background: #fee2e2; color: #ef4444; cursor: pointer; display:flex; align-items:center; justify-content:center; transition: all 0.2s;}
-    .tb-logout:hover { background: #ef4444; color: white;}
+    .hub-main-content { padding: 40px 60px; }
+    .hub-greeting { font-family: var(--font-serif); font-size: 42px; color: var(--text-main); margin-bottom: 8px; letter-spacing: -0.01em; }
+    .hub-meta { font-family: monospace; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.6; margin-bottom: 40px;}
 
-    /* Content Layout */
-    .content-h { padding: 40px 60px 20px 60px; }
-    .greeting-h { font-family: var(--font-serif); font-size: 44px; color: var(--text-main); margin: 0 0 10px 0; letter-spacing: -0.01em; }
-    .meta-line-h { font-family: monospace; font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.7;}
+    /* QUICK ACCESS GRID (4-cols) */
+    .hub-quick-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 60px; }
+    .hub-qa-card { background: white; border: 1px solid var(--border-light); border-radius: 20px; padding: 24px; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: var(--shadow-glass); display: flex; flex-direction: column; gap: 8px;}
+    .hub-qa-card:hover { transform: translateY(-4px); border-color: var(--accent-primary); box-shadow: 0 20px 40px rgba(0,0,0,0.05); }
+    .hub-qa-ic { width: 40px; height: 40px; border-radius: 12px; display:flex; align-items:center; justify-content:center; font-size: 20px; margin-bottom: 4px;}
+    .hub-qa-title { font-size: 16px; font-weight: 700; color: var(--text-main); }
+    .hub-qa-sub { font-size: 10px; color: var(--text-muted); line-height: 1.4; }
 
-    .quick-grid { padding: 20px 60px 40px 60px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
-    .studi-grid-h { padding: 0 60px 60px 60px; display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 30px; }
+    /* STUDI GRID (3-cols fixed) */
+    .studi-lbl { display:flex; justify-content:space-between; align-items:center; margin-bottom: 24px; font-size: 13px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.12em; }
+    .studi-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; padding-bottom: 60px; }
 
-    /* Quick Access Card refinement */
-    .qa-v10 { background: white; border: 1px solid var(--border-light); border-radius: 20px; padding: 24px; display:flex; flex-direction:column; gap:8px; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: var(--shadow-glass); }
-    .qa-v10:hover { transform: translateY(-4px); border-color: var(--accent-primary); box-shadow: 0 20px 40px rgba(0,0,0,0.05); }
-    .qa-icon-v10 { width: 44px; height: 44px; border-radius: 12px; display:flex; align-items:center; justify-content:center; font-size: 20px; margin-bottom: 4px; }
-    .qa-title-v10 { font-size: 16px; font-weight: 700; color: var(--text-main); }
-    .qa-sub-v10 { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
-
-    /* Custom Modal Delete Re-styled */
-    .vm-v10-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(12px); z-index: 1000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease;}
-    .vm-v10-overlay.show { display: flex; opacity: 1; }
-    .vm-v10 { background: white; border-radius: 32px; padding: 40px; width: 420px; text-align: center; border: 1px solid rgba(255,255,255,1); box-shadow: 0 40px 100px rgba(15,23,42,0.2); }
-    .vm-v10-icon { width: 64px; height: 64px; background: #fef2f2; color: #ef4444; border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size: 32px; margin: 0 auto 24px; }
+    /* Custom Modal Delete V10 Style */
+    .v10-del-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(12px); z-index: 5000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
+    .v10-del-overlay.show { display: flex; opacity: 1; }
+    .v10-del-box { background: white; border-radius: 36px; padding: 48px; width: 440px; text-align: center; border: 1px solid rgba(255,255,255,1); box-shadow: 0 40px 100px rgba(15,23,42,0.2); }
+    .v10-del-ic { width: 80px; height: 80px; background: #fef2f2; color: #ef4444; border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size: 40px; margin: 0 auto 30px; }
   </style>
 </head>
 <body>
 
-  <!-- SIDEBAR V10: BRAND + SEGRETARIO -->
-  <aside class="v10-sidebar">
-    <div class="sidebar-brand">
-      <div class="sb-logo">
-        <div class="sb-icon"><i class="ph-fill ph-sparkle"></i></div>
-        <div class="sb-name">Factory</div>
+  <!-- SIDEBAR HUB V10 -->
+  <aside class="v10-sidebar-hub">
+    <div class="sb-brand-area">
+      <div class="sb-logo-v10">
+        <div class="sb-icon-v10"><i class="ph-fill ph-sparkle"></i></div>
+        <div class="sb-name-v10">Factory</div>
       </div>
-      <div class="sb-tag">Meta-Platform V.10</div>
+      <div class="sb-sub-v10">Vision 2.0 Pro • V.10</div>
     </div>
 
-    <div class="sidebar-secretary">
-      <div class="sec-hdr">
-        <div class="sec-title" data-t="global_secretary">Segretario Globale</div>
-        <div class="sec-badge">2 Alerts</div>
+    <!-- Segretario Globale (Sotto Brand, Bilanciato) -->
+    <div class="sb-secretary-hub">
+      <div class="sec-hdr-compact">
+        <div class="sec-lbl-compact">Segretario Globale</div>
+        <div class="sec-badge-compact">LIVE</div>
       </div>
       
-      <div class="sec-body">
-        <span class="sec-section-lbl" data-t="require_approval">Richiedono Approvazione</span>
+      <div class="sec-body-compact">
+        <span class="hub-qa-sub" style="margin-bottom: 12px; display: block; font-weight: 800; text-transform: uppercase;">Notifiche di Sistema</span>
         
-        <!-- ALERT CARD 1 -->
-        <div class="alert-card">
-          <span class="ac-type">Pubblicazione Post</span>
-          <div class="ac-title">Reel "Mistero 01" pronto per il Social Loop</div>
-          <span class="ac-studio">📍 STUDIO: Io, Scrittore</span>
-          <div class="ac-actions">
-            <button class="ac-btn ac-btn-ok"><i class="ph ph-check"></i> Approva</button>
-            <button class="ac-btn ac-btn-no"><i class="ph ph-x"></i> Rifiuta</button>
+        <div class="sec-alert">
+          <span class="sec-alert-type">Approval Loop</span>
+          <div class="sec-alert-txt">Reel "Mistero" pronto per revisione finale.</div>
+          <div class="sec-alert-actions">
+            <button class="btn-sec-sm btn-sec-ok"><i class="ph ph-check"></i> Approva</button>
+            <button class="btn-sec-sm btn-sec-no"><i class="ph ph-x"></i> Rifiuta</button>
           </div>
         </div>
 
-        <!-- ALERT CARD 2 -->
-        <div class="alert-card">
-          <span class="ac-type">Update Architettura</span>
-          <div class="ac-title">Nuova versione Prompt Scrittore disponibile</div>
-          <span class="ac-studio">📍 STUDIO: Global Sync</span>
-          <div class="ac-actions">
-            <button class="ac-btn ac-btn-ok" style="background:#e0f2fe; color:#0ea5e9;"><i class="ph ph-arrow-circle-up"></i> Aggiorna</button>
-          </div>
+        <div class="sec-alert" style="border-left: 4px solid #f59e0b;">
+          <span class="sec-alert-type" style="color: #f59e0b;">Agenda</span>
+          <div class="sec-alert-txt">Appuntamento Psicologo tra 2 ore.</div>
+          <div style="font-size: 9px; color: var(--text-muted); font-family: monospace;">👤 Privato • Oggi, 18:00</div>
         </div>
 
-        <span class="sec-section-lbl" data-t="global_agenda">Agenda Globale Privata</span>
-        <div class="alert-card" style="border-left: 4px solid var(--accent-primary);">
-          <div class="ac-title">Appuntamento Psicologo</div>
-          <span class="ac-studio">🕑 Oggi, 18:00 • Inizio tra 2h</span>
-        </div>
-
-        <button class="sp-add-btn" style="margin-top: 24px; width: 100%;"><i class="ph ph-plus-circle"></i> Aggiungi Task Globale</button>
+        <button class="sp-add-btn" style="width:100%; margin-top: 10px; border-radius: 12px; padding: 12px; background: transparent; border: 1px dashed var(--border-light); color: var(--text-muted); cursor: pointer;"><i class="ph ph-plus-circle"></i> Aggiungi Task</button>
       </div>
     </div>
   </aside>
 
-  <!-- MAIN AREA -->
-  <main class="launcher-main">
-    <header class="v10-topbar">
-      <div class="tb-user">
-        <div class="tb-av">IC</div>
-        <span class="tb-name">Il Capo</span>
-        <div style="width:1px; height:16px; background:var(--border-light); margin:0 4px;"></div>
-        <button class="tb-logout" onclick="location.href='index.html'" title="Esci"><i class="ph ph-sign-out"></i></button>
+  <!-- MAIN DASHBOARD HUB -->
+  <main class="dashboard-center">
+    <header class="tb-hub">
+      <div class="hub-profile">
+        <div style="width:24px; height:24px; border-radius:50%; background:var(--accent-primary); color:white; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800;">IC</div>
+        <span class="hub-name">Il Capo</span>
+        <div style="width:1px; height:20px; background:var(--border-light); margin:0 4px;"></div>
+        <button class="hub-logout" onclick="location.href='index.html'" title="Esci"><i class="ph ph-sign-out"></i></button>
       </div>
     </header>
 
-    <div class="content-h">
-      <h1 class="greeting-h">Buongiorno, Il Capo 👋</h1>
-      <div class="meta-line-h">Hai <span id="studioCountDisplay">2</span> studi attivi nel cloud. Scegli dove operare.</div>
-    </div>
+    <div class="hub-main-content">
+      <h1 class="hub-greeting">Buongiorno, Il Capo 👋</h1>
+      <div class="hub-meta">HAI <span id="stCount">2</span> STUDI ATTIVI — SCEGLI IL TUO SPAZIO OPERATIVO</div>
 
-    <!-- QUICK ACCESS GRID -->
-    <div class="quick-grid">
-      <div class="qa-v10" onclick="location.href='roadmap.html'">
-        <div class="qa-icon-v10" style="background:#fce7f3; color:#ec4899;"><i class="ph ph-rocket-launch"></i></div>
-        <div class="qa-title">Roadmap</div>
-        <div class="qa-sub-v10">Avanzamento & Visione Meta-App</div>
+      <!-- QUICK ACCESS (4 COLS) -->
+      <div class="hub-quick-grid">
+        <div class="hub-qa-card" onclick="location.href='roadmap.html'">
+          <div class="hub-qa-ic" style="background:#fce7f3; color:#ec4899;"><i class="ph ph-rocket-launch"></i></div>
+          <div class="hub-qa-title">Roadmap</div>
+          <div class="hub-qa-sub">Stato avanzamento & Visione Meta-App</div>
+        </div>
+        <div class="hub-qa-card" onclick="alert('Impostazioni Globali Sincronizzate')">
+          <div class="hub-qa-ic" style="background:#ede9fe; color:#8b5cf6;"><i class="ph ph-gear-six"></i></div>
+          <div class="hub-qa-title">Impostazioni</div>
+          <div class="hub-qa-sub">Profilo, API Keys e Temi Globali</div>
+        </div>
+        <div class="hub-qa-card">
+          <div class="hub-qa-ic" style="background:#fef3c7; color:#f59e0b;"><i class="ph ph-clipboard-text"></i></div>
+          <div class="hub-qa-title">Log Globale</div>
+          <div class="hub-qa-sub">Storico attività da tutti gli studi</div>
+        </div>
+        <div class="hub-qa-card">
+          <div class="hub-qa-ic" style="background:#cffafe; color:#06b6d4;"><i class="ph ph-chart-line-up"></i></div>
+          <div class="hub-qa-title">Live Stats</div>
+          <div class="hub-qa-sub">Performance social e sentiment globale</div>
+        </div>
       </div>
-      <div class="qa-v10" onclick="alert('Settings modal in arrivo...')">
-        <div class="qa-icon-v10" style="background:#ede9fe; color:#8b5cf6;"><i class="ph ph-gear-six"></i></div>
-        <div class="qa-title">Impostazioni</div>
-        <div class="qa-sub-v10">Profili, API Gemini & Preferenze</div>
-      </div>
-      <div class="qa-v10">
-        <div class="qa-icon-v10" style="background:#fef3c7; color:#f59e0b;"><i class="ph ph-clipboard-text"></i></div>
-        <div class="qa-title">Log Globale</div>
-        <div class="qa-sub-v10">Storico azioni multi-studio</div>
-      </div>
-      <div class="qa-v10">
-        <div class="qa-icon-v10" style="background:#cffafe; color:#06b6d4;"><i class="ph ph-chart-line-up"></i></div>
-        <div class="qa-title">Live Stats</div>
-        <div class="qa-sub-v10">Social performance in tempo reale</div>
-      </div>
-    </div>
 
-    <div class="content-h" style="padding-top: 0; padding-bottom: 24px;">
-      <div class="studi-section-title">I TUOI STUDI <span class="sync-status" id="syncStatus">☁️ Cloud Sincronizzato</span></div>
-    </div>
-
-    <div class="studi-grid-h" id="studiGrid">
-      <!-- DYNAMICALLY RENDERED -->
+      <!-- I TUOI STUDI (3 COLS) -->
+      <div class="studi-lbl">I TUOI STUDI <span style="font-size: 10px; color: #10b981;">☁️ Sincronizzato</span></div>
+      <div class="studi-grid-3" id="studiGrid-v10">
+        <!-- Rendered via JS -->
+      </div>
     </div>
   </main>
 
-  <!-- CUSTOM MODAL DELETE -->
-  <div class="vm-v10-overlay" id="deleteModal">
-    <div class="vm-v10">
-      <div class="vm-v10-icon"><i class="ph ph-trash"></i></div>
-      <h2 style="font-family: var(--font-serif); font-size: 24px; color: var(--text-main); margin-bottom: 12px;">Demolire lo studio?</h2>
-      <p style="font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 30px;">Questa azione scollegherà tutti gli agenti e archivierà i dati. Sei sicuro di voler procedere?</p>
-      <div style="display: flex; gap: 12px; justify-content: center;">
-        <button class="ac-btn" style="background:var(--bg-core); color:var(--text-main); padding: 12px 24px;" onclick="closeDeleteModal()">Annulla</button>
-        <button class="ac-btn" style="background:#ef4444; color:white; padding: 12px 24px;" id="confirmDelete">Sì, Demolisci</button>
+  <!-- DELETE MODAL V10 -->
+  <div class="v10-del-overlay" id="delModal">
+    <div class="v10-del-box">
+      <div class="v10-del-ic"><i class="ph ph-trash"></i></div>
+      <h2 style="font-family: var(--font-serif); font-size: 28px; color: var(--text-main); margin-bottom: 12px;">Demolire lo studio?</h2>
+      <p style="font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 40px;">Tutti gli agenti verranno scollegati e i progetti archiviati. <br>Questa azione non può essere annullata nel cloud.</p>
+      <div style="display: flex; gap: 16px; justify-content: center;">
+        <button class="btn-sec-sm" style="background:var(--bg-core); color:var(--text-main); padding: 14px 28px; border-radius: 12px; font-size: 13px;" onclick="closeDel()">Annulla</button>
+        <button class="btn-sec-sm" style="background:#ef4444; color:white; padding: 14px 28px; border-radius: 12px; font-size: 13px;" id="confirmDel">Sì, Demolisci</button>
       </div>
     </div>
   </div>
@@ -213,42 +192,27 @@
     ];
 
     let dbStudi = JSON.parse(localStorage.getItem('v10_studi_cloud')) || defaultStudi;
-    let studioToDelete = null;
+    let stToDelete = null;
 
-    window.openDeleteModal = function(id) {
-      studioToDelete = id;
-      document.getElementById('deleteModal').classList.add('show');
-    }
-    window.closeDeleteModal = function() {
-      document.getElementById('deleteModal').classList.remove('show');
-    }
-    document.getElementById('confirmDelete').onclick = () => {
-      if(studioToDelete) {
-        dbStudi = dbStudi.filter(s => s.id !== studioToDelete);
+    window.openDel = (id) => { stToDelete = id; document.getElementById('delModal').classList.add('show'); }
+    window.closeDel = () => { document.getElementById('delModal').classList.remove('show'); }
+    document.getElementById('confirmDel').onclick = () => {
+      if(stToDelete) {
+        dbStudi = dbStudi.filter(s => s.id !== stToDelete);
         saveDB();
-        renderStudi();
-        closeDeleteModal();
+        renderHubStudi();
+        closeDel();
       }
     }
 
     function saveDB() {
       localStorage.setItem('v10_studi_cloud', JSON.stringify(dbStudi));
-      const sync = document.getElementById('syncStatus');
-      sync.style.opacity = '1';
-      setTimeout(() => sync.style.opacity = '0.5', 1000);
     }
 
-    window.updateStudioTitle = function(id, el) {
-      const newTitle = el.innerText.trim();
-      const st = dbStudi.find(s => s.id === id);
-      if(st && newTitle !== "") { st.title = newTitle; saveDB(); }
-      else if(st) { el.innerText = st.title; }
-    }
-
-    window.renderStudi = function() {
-      const g = document.getElementById('studiGrid');
+    window.renderHubStudi = () => {
+      const g = document.getElementById('studiGrid-v10');
       g.innerHTML = '';
-      document.getElementById('studioCountDisplay').textContent = dbStudi.length;
+      document.getElementById('stCount').textContent = dbStudi.length;
 
       dbStudi.forEach(s => {
         let tagHTML = s.tags.map(t => `<span class="tag" style="color:${t.c}; background:${t.b}; border-color:${t.bd};">${t.t}</span>`).join('');
@@ -257,7 +221,7 @@
             ${s.bg !== 'transparent' ? `<div style="position:absolute; top:0; left:0; right:0; height:100px; background:${s.bg}; border-radius:24px 24px 0 0; z-index:0;"></div>` : ''}
             <i class="ph ph-dots-six-vertical drag-handle"></i>
             <div class="studio-icon-wrap" style="color: ${s.color}; position:relative; z-index:1;"><i class="ph ${s.icon}"></i></div>
-            <h2 class="studio-title" contenteditable="true" onblur="updateStudioTitle('${s.id}', this)" style="position:relative; z-index:1; outline:none;">${s.title}</h2>
+            <h2 class="studio-title" contenteditable="true" onblur="updateTitleHub('${s.id}', this)" style="position:relative; z-index:1;">${s.title}</h2>
             <p class="studio-desc" style="position:relative; z-index:1;">${s.desc}</p>
             <div class="studio-tags" style="position:relative; z-index:1;">${tagHTML}</div>
             <div class="studio-stats" style="position:relative; z-index:1;">
@@ -267,36 +231,32 @@
             </div>
             <div class="studio-actions" style="position:relative; z-index:1;">
               <button class="btn-apri" onclick="window.location.href='studio.html?id=${s.id}'"><i class="ph ph-play"></i> Apri studio</button>
-              <button class="btn-del" onclick="openDeleteModal('${s.id}')"><i class="ph ph-trash"></i></button>
+              <button class="btn-del" onclick="openDel('${s.id}')"><i class="ph ph-trash"></i></button>
             </div>
           </div>
         `;
       });
-
       g.innerHTML += `
-        <div class="new-studio-card" id="newStudioBtn">
+        <div class="new-studio-card" onclick="alert('Wizard Architetto V10')">
           <div class="add-icon"><i class="ph ph-plus"></i></div>
           <div class="ns-title">Nuovo Studio</div>
-          <div class="ns-sub">Espandi il tuo impero digitale</div>
+          <div class="ns-sub">Espandi il tuo universo digitale</div>
         </div>
       `;
-      document.getElementById('newStudioBtn').onclick = () => alert("Arriva fra poco...");
+    }
+
+    window.updateTitleHub = (id, el) => {
+      const v = el.innerText.trim();
+      const st = dbStudi.find(s => s.id === id);
+      if(st && v !== "") { st.title = v; saveDB(); }
+      else if(st) { el.innerText = st.title; }
     }
 
     document.addEventListener("DOMContentLoaded", () => {
       applyTranslations();
-      renderStudi();
-      if(typeof Sortable !== 'undefined') {
-        new Sortable(document.getElementById('studiGrid'), {
-          animation: 300, handle: '.drag-handle', ghostClass: 'sortable-ghost'
-        });
-      }
-    });
-
-    document.addEventListener('langChanged', () => {
-      applyTranslations();
-      renderStudi();
+      renderHubStudi();
     });
   </script>
+
 </body>
 </html>
