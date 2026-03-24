@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Content Factory V10 — Login</title>
+  <title data-t="login_title">Content Factory V10 — Login</title>
   
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <link rel="stylesheet" href="styles.css">
@@ -94,9 +94,28 @@
     .success-icon { width: 80px; height: 80px; border-radius: 50%; background: #10b981; color: white; display: flex; align-items: center; justify-content: center; font-size: 40px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(16,185,129,0.3); animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);}
     
     @keyframes scaleIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    /* Language Selector Styles */
+    .lang-selector {
+      position: absolute; top: 40px; right: 40px; display: flex; gap: 8px; z-index: 100;
+    }
+    .lang-btn {
+      width: 34px; height: 34px; border-radius: 10px; background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 1);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 10px; font-weight: 800; transition: all 0.2s;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.02); color: var(--text-muted);
+    }
+    .lang-btn:hover { background: white; transform: translateY(-2px); box-shadow: 0 8px 15px rgba(0,0,0,0.05); }
+    .lang-btn.active { border-color: var(--accent-primary); color: var(--text-main); background: white; }
   </style>
 </head>
 <body>
+
+  <div class="lang-selector">
+    <button class="lang-btn" onclick="setLang('it')" id="lang-it">IT</button>
+    <button class="lang-btn" onclick="setLang('en')" id="lang-en">EN</button>
+    <button class="lang-btn" onclick="setLang('fr')" id="lang-fr">FR</button>
+  </div>
 
   <div class="bg-elements">
     <div class="blob-1"></div>
@@ -107,8 +126,8 @@
     
     <div class="overlay" id="successOverlay">
       <div class="success-icon"><i class="ph-bold ph-check"></i></div>
-      <h2 style="font-family: var(--font-serif); font-size: 32px; margin-bottom: 8px;">Bentornato</h2>
-      <p style="color: var(--text-muted); font-size: 13px;">Caricamento hub centrale...</p>
+      <h2 style="font-family: var(--font-serif); font-size: 32px; margin-bottom: 8px;" data-t="welcome_back">Bentornato</h2>
+      <p style="color: var(--text-muted); font-size: 13px;" data-t="loading_studio">Caricamento hub centrale...</p>
     </div>
 
     <!-- LOGO -->
@@ -121,7 +140,7 @@
     <div class="avatar-sec">
       <div class="avatar-img">🦁</div>
       <div class="user-name">Il Capo</div>
-      <div class="user-role">Direttore Creativo</div>
+      <div class="user-role" data-t="founder_role">Direttore Creativo</div>
     </div>
 
     <!-- PIN DOTS -->
@@ -146,10 +165,30 @@
       <button class="nbtn special" onclick="del()"><i class="ph ph-backspace"></i></button>
     </div>
 
-    <div class="pin-hint">PIN di test: 1 2 3 4 5 6</div>
+    <div class="pin-hint" data-t="pin_default_hint">PIN di test: 1 2 3 4 5 6</div>
   </div>
 
-  <script>
+<script type="module">
+    import { applyTranslations, setLang, getLang } from "./src/core/i18n.js";
+
+    // Initialize i18n
+    window.setLang = (lang) => {
+      setLang(lang);
+      updateLangSelectors(lang);
+    };
+
+    function updateLangSelectors(lang) {
+      document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('lang-' + lang)?.classList.add('active');
+    }
+
+    // Initial application
+    document.addEventListener('DOMContentLoaded', () => {
+      const current = getLang();
+      updateLangSelectors(current);
+      applyTranslations();
+    });
+
     let pin = [];
     const correctPin = '123456';
     const dots = document.querySelectorAll('.dot');
