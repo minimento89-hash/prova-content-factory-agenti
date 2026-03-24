@@ -98,6 +98,15 @@
     .wd-btn:hover { transform: scale(1.02); }
     
     .sortable-ghost { opacity: 0.4; transform: scale(0.95); background: var(--accent-light); border: 2px dashed var(--accent-primary); }
+
+    /* Lang Selector Studio Styles */
+    .lang-btn-s {
+      padding: 4px 10px; border-radius: 8px; border: 1px solid var(--border-light);
+      background: var(--bg-surface); color: var(--text-muted); font-size: 10px; font-weight: 700;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .lang-btn-s:hover { border-color: var(--accent-primary); color: var(--text-main); }
+    .lang-btn-s.active { background: var(--accent-primary); color: white; border-color: var(--accent-primary); }
   </style>
 
 </head>
@@ -150,6 +159,11 @@
     <header class="s-header">
       <h1 class="s-title">Buongiorno.</h1>
       <div class="s-actions">
+        <div class="lang-selector-studio" style="display:flex; gap:8px; margin-right:12px;">
+          <button class="lang-btn-s" onclick="window.setLang('it')" id="lang-it">IT</button>
+          <button class="lang-btn-s" onclick="window.setLang('en')" id="lang-en">EN</button>
+          <button class="lang-btn-s" onclick="window.setLang('fr')" id="lang-fr">FR</button>
+        </div>
         <div class="s-btn-icon"><i class="ph ph-magnifying-glass"></i></div>
         <div class="s-btn-icon"><i class="ph ph-bell"></i></div>
         <div class="s-btn-icon"><i class="ph ph-gear-six"></i></div>
@@ -340,8 +354,18 @@
   </div>
 
   <script type="module">
-    import { applyTranslations, t } from "./src/core/i18n.js";
+    import { applyTranslations, t, setLang, getLang } from "./src/core/i18n.js";
     
+    window.setLang = function(lang) {
+      setLang(lang);
+      updateLangSelectors(lang);
+    }
+
+    function updateLangSelectors(lang) {
+      document.querySelectorAll('.lang-btn-s').forEach(b => b.classList.remove('active'));
+      document.getElementById('lang-' + lang)?.classList.add('active');
+    }
+
     window.toggleSegretario = function() {
       const panel = document.getElementById('sgrPanel');
       const overlay = document.getElementById('sgrOverlay');
@@ -350,6 +374,8 @@
     }
 
     document.addEventListener("DOMContentLoaded", () => {
+        const current = getLang();
+        updateLangSelectors(current);
         applyTranslations();
         
         const grid = document.getElementById('dashboardGrid');
@@ -361,6 +387,10 @@
               easing: "cubic-bezier(0.16, 1, 0.3, 1)"
           });
         }
+    });
+
+    document.addEventListener('langChanged', () => {
+        applyTranslations();
     });
   </script>
 
